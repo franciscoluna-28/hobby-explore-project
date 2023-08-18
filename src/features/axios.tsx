@@ -10,6 +10,8 @@ export const axios = Axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
 });
 
+console.log("testing request")
+
 // Getting an existent instance of the user accessToken
 const userToken = sessionStorage.getItem("accessToken");
 

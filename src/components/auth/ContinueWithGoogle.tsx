@@ -16,7 +16,7 @@ export default function ContinueWithGoogle({
       onClick={continueWithGoogle} // Call the continueWithGoogle function on click
       className={`bg-white ${
         disabled
-          ? "disabled:brightness-7 bg-red-500  disabled:border-0 disabled:hover:!border-transparent"
+          ? "disabled:brightness-75  disabled:border-0 disabled:hover:!border-transparent"
           : "hover:brightness-95"
       } mt-4 text-slate-500 hover:shadow-black shadow-transparent hover:border-accent/20 font-normal hover:bg-white w-full flex duration-200 items-center justify-center gap-2  border-2 border-gray-100 p-4 rounded-xl`}
     >

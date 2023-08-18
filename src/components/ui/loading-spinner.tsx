@@ -1,10 +1,43 @@
 // Spinner styled with built - in Tailwind Styles
-export default function LoadingSpinner() {
+import { VariantProps, cva } from "class-variance-authority";
+import { cn } from "../../lib/utils";
+
+const loadingSpinnerVariants = cva(
+  "inline mr-2 text-gray-200 animate-spin text-gray-700",
+  {
+    variants: {
+      variant: {
+        default: "fill-main",
+        contrast: "fill-white",
+      },
+      size: {
+        xl: "w-8 h-8",
+        default: "w-6 h-6",
+        sm: "w-4 h-4",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
+
+interface LoadingSpinnerProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof loadingSpinnerVariants> {}
+
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+  className,
+  size,
+  variant,
+  ...props
+}) => {
   return (
-    <div role="status" className="flex">
+    <div role="status" {...props}>
       <svg
         aria-hidden="true"
-        className="inline w-8 h-8 mr-2 text-gray-200 fill-main animate-spin dark:text-gray-600"
+        className={cn(loadingSpinnerVariants({ className, size, variant }))}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -21,6 +54,8 @@ export default function LoadingSpinner() {
       <span className="sr-only">Loading...</span>
     </div>
   );
-}
+};
 
+export default LoadingSpinner;
 
+export { loadingSpinnerVariants };

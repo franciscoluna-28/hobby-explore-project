@@ -1,6 +1,5 @@
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
-import { AiOutlineMenu } from "react-icons/ai"
 import Header from "./Header";
 
 

@@ -11,7 +11,10 @@ import { FirebaseError } from "firebase/app";
 import { Navigate } from "react-router-dom";
 import { deleteTokenFromSessionStorage } from "../lib/delete-token-from-session-storage";
 import { signInWithPopup } from "firebase/auth";
-import { createNewUser } from "../features/user-actions/api/use-register-user";
+import {
+  createNewUser,
+  createNewUserWithGoogle,
+} from "../features/user-actions/api/use-register-user";
 import { useAuth } from "./useAuth";
 
 /**
@@ -29,7 +32,7 @@ export function useFirebase() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
-  const {token} = useAuth();
+  const { token } = useAuth();
 
   async function signUpWithEmailAndPassword(email: string, password: string) {
     try {
@@ -84,7 +87,11 @@ export function useFirebase() {
   async function continueWithGoogle() {
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const res = await signInWithPopup(auth, provider);
+
+      if (res.user) {
+        createNewUserWithGoogle(auth, token ?? "");
+      }
     } catch (error) {
       if (error instanceof FirebaseError) {
         setError(error.message);

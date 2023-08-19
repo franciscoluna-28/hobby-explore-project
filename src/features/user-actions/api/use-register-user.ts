@@ -3,6 +3,7 @@ import { axios } from "../../axios";
 
 const QUERY_KEY = "user";
 
+// Función para crear un nuevo usuario
 export function createNewUser(auth: Auth, bearerToken: string) {
   return axios.post(`${QUERY_KEY}/register`, {
     email: auth.currentUser?.email,
@@ -15,11 +16,13 @@ export function createNewUser(auth: Auth, bearerToken: string) {
   });
 }
 
-export function createNewUserWithGoogle(auth: Auth) {
+// Función para crear un nuevo usuario con Google
+export function createNewUserWithGoogle(auth: Auth, bearerToken: string) {
+
   return axios.post(`${QUERY_KEY}/register`, {
     email: auth.currentUser?.email,
     uid: auth.currentUser?.uid,
-    bearerToken: sessionStorage.getItem("accessToken"),
+    bearerToken: bearerToken,
     displayName: auth.currentUser?.displayName,
     photoUrl: auth.currentUser?.photoURL,
     emailVerified: auth.currentUser?.emailVerified,
@@ -27,13 +30,4 @@ export function createNewUserWithGoogle(auth: Auth) {
   });
 }
 
-/* export function registerUserToken(uid: string) {
-  const accessToken = sessionStorage.getItem("accessToken");
 
-  return axios.post(
-    `http://localhost:3000/api/user/register-user-token/${uid}`,
-    {
-      bearedToken: accessToken,
-    }
-  );
-} */

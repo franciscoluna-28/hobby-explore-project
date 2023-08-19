@@ -4,7 +4,7 @@ import { IPredefinedActivityCard } from "../../../types/default-activities";
 
 // API common endpoint
 // This is temporary and just to test the cards
-const QUERY_KEY = "activity/random";
+const QUERY_KEY = "activity/three-activities-from-db-with-type";
 
 // Gets 3 random activities from the Hobby Explore API
 async function getRecommendedDefaultActivities(): Promise<IPredefinedActivityCard[]> {

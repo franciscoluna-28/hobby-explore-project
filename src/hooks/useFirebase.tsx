@@ -64,6 +64,7 @@ export function useFirebase() {
       if (res.user) {
         setIsLoading(false);
         setSuccess("Logged In Successfully!");
+        createNewUser(auth, token ?? "");
       }
     } catch (error) {
       if (error instanceof FirebaseError) {

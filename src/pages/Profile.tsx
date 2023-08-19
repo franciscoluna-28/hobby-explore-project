@@ -36,6 +36,7 @@ export default function Profile() {
   return (
     <main className="flex justify-center flex-col items-center m-auto">
       <h1 className="font-bold text-accent text-4xl">User Profile</h1>
+      <h2>{auth.currentUser?.email}</h2>
       <Avatar className="w-32 h-32 border-black border-2 p-1 hover:p-0 hover:scale-105 duration-200 mt-4">
         <AvatarImage
           className="rounded-full"

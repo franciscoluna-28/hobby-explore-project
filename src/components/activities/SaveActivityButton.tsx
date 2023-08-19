@@ -21,7 +21,7 @@ const SaveActivityButton: React.FC<SaveActivityButtonProps> = ({
       className="hover:brightness-90 shadow-xl bg-white  
       absolute z-0 left-4 top-0 duration-200 text-white 
       font-semibold disabled:brightness-75 px-4 my-4 py-2 
-      text-lg w-20 h-20 rounded-full"
+      text-lg w-16 h-16 rounded-full md:w-20 md:h-20"
     >
       {isSaving ? (
         <LoadingSpinner size="xl" className="m-auto" />

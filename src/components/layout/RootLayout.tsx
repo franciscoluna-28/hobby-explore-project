@@ -1,14 +1,18 @@
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
+import { AiOutlineMenu } from "react-icons/ai"
+import Header from "./Header";
+
 
 export default function RootLayout() {
   return (
     <>
-      <main className="lg:grid lg:grid-cols-5">
-        <div className="lg:grid-span-1 hidden lg:block ">
+      <main className="block md:grid md:grid-flow-col grid-cols-5 m-auto">
+        <div className="col-span-1 hidden md:block">
           <Sidebar />
         </div>
-        <div className="lg:col-span-4 container p-8 flex">
+       <Header/>
+        <div className="col-span-5 flex container p-8">
           <Outlet />
         </div>
       </main>

@@ -21,9 +21,9 @@ export default function Home() {
 
   return (
     <div>
-      <h1 className="text-accent text-4xl font-bold">Activities for you</h1>
+      <h1 className="text-accent w-full text-3xl lg:text-4xl font-bold">Activities for you</h1>
 
-      <ul className="columns-3 mt-8">
+      <ul className="columns-1 sm:columns-2 w-full space-y-8 mt-8 lg:columns-3">
         {recommendedActivities &&
           recommendedActivities.map((activity) => (
             <ActivityCard {...activity} key={activity.id} />

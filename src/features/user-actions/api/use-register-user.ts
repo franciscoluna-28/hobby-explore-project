@@ -14,11 +14,12 @@ export function createNewUser(auth: Auth, bearerToken: string) {
     emailVerified: auth.currentUser?.emailVerified,
     createdAt: auth.currentUser?.metadata.creationTime,
   });
+
+ 
 }
 
 // Función para crear un nuevo usuario con Google
 export function createNewUserWithGoogle(auth: Auth, bearerToken: string) {
-
   return axios.post(`${QUERY_KEY}/register`, {
     email: auth.currentUser?.email,
     uid: auth.currentUser?.uid,

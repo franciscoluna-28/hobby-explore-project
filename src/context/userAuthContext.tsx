@@ -38,7 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // The main layer of security is within the backend so this is enough
   useEffect(() => {
     const fetchToken = async () => {
-      if (sessionStorage.getItem("accessToken") === null) {
+      if (sessionStorage.getItem("accessToken") === null || !token) {
         const userToken = await currentUser?.getIdToken();
         if (userToken) {
           sessionStorage.setItem("accessToken", userToken);

@@ -15,7 +15,6 @@ import {
   createNewUser,
   createNewUserWithGoogle,
 } from "../features/user-actions/api/use-register-user";
-import { useAuth } from "./useAuth";
 
 /**
  * @constant [isLoading, setIsloading] Loading state.
@@ -32,17 +31,16 @@ export function useFirebase() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
-  const { token } = useAuth();
 
   async function signUpWithEmailAndPassword(email: string, password: string) {
     try {
       setIsLoading(true);
       const res = await createUserWithEmailAndPassword(auth, email, password);
-  
+
       if (res.user) {
         setIsLoading(false);
         setSuccess("Account created successfully!");
-  
+
         const userToken = await auth.currentUser?.getIdToken();
         if (userToken) {
           createNewUser(auth, userToken);
@@ -66,7 +64,7 @@ export function useFirebase() {
       if (res.user) {
         setIsLoading(false);
         setSuccess("Logged In Successfully!");
-  
+
         const userToken = await auth.currentUser?.getIdToken();
         if (userToken) {
           createNewUser(auth, userToken);
@@ -95,10 +93,10 @@ export function useFirebase() {
     try {
       const provider = new GoogleAuthProvider();
       const res = await signInWithPopup(auth, provider);
-  
+
       if (res.user) {
         setIsLoading(false);
-  
+
         const userToken = await auth.currentUser?.getIdToken();
         if (userToken) {
           createNewUserWithGoogle(auth, userToken);
@@ -112,7 +110,6 @@ export function useFirebase() {
       setIsLoading(false);
     }
   }
-  
 
   async function resetPassword(email: string) {
     try {

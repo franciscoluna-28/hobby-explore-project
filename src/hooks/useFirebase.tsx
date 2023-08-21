@@ -38,15 +38,17 @@ export function useFirebase() {
     try {
       setIsLoading(true);
       const res = await createUserWithEmailAndPassword(auth, email, password);
-
-      // In case a usar was created we continue the execution
+  
       if (res.user) {
         setIsLoading(false);
         setSuccess("Account created successfully!");
-        createNewUser(auth, token!);
+  
+        const userToken = await auth.currentUser?.getIdToken();
+        if (userToken) {
+          createNewUser(auth, userToken);
+        }
       }
     } catch (error) {
-      // Checking if the error is a valid instance of FirebaseError
       if (error instanceof FirebaseError) {
         setError(error.message);
       }
@@ -64,7 +66,11 @@ export function useFirebase() {
       if (res.user) {
         setIsLoading(false);
         setSuccess("Logged In Successfully!");
-        createNewUser(auth, token! ?? sessionStorage.getItem("accessToken"));
+  
+        const userToken = await auth.currentUser?.getIdToken();
+        if (userToken) {
+          createNewUser(auth, userToken);
+        }
       }
     } catch (error) {
       if (error instanceof FirebaseError) {
@@ -89,9 +95,14 @@ export function useFirebase() {
     try {
       const provider = new GoogleAuthProvider();
       const res = await signInWithPopup(auth, provider);
-
+  
       if (res.user) {
-        createNewUserWithGoogle(auth, token! ?? sessionStorage.getItem("accessToken"));
+        setIsLoading(false);
+  
+        const userToken = await auth.currentUser?.getIdToken();
+        if (userToken) {
+          createNewUserWithGoogle(auth, userToken);
+        }
       }
     } catch (error) {
       if (error instanceof FirebaseError) {
@@ -101,6 +112,7 @@ export function useFirebase() {
       setIsLoading(false);
     }
   }
+  
 
   async function resetPassword(email: string) {
     try {

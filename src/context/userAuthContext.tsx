@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { User } from "firebase/auth";
+import { User, getIdToken } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 
@@ -10,13 +10,6 @@ interface AuthContextType {
   setToken: (token: string | null) => void;
 }
 
-/**
- * @constant AuthContext - Auth context.
- * @function - Auth context provider.
- * @returns - Auth provider that accepts children.
- *
- */
-
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 interface AuthProviderProps {
@@ -24,25 +17,20 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(
+    sessionStorage.getItem("accessToken") || null
+  );
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  /**
-   * @function fetchToken - Handles the token of the user.
-   * @returns - User's beared token.
-   * @default null - The default of value is null before a new user registers.
-   *
-   */
-
-  // Handle user JWT token according the user state
-  // The main layer of security is within the backend so this is enough
   useEffect(() => {
     const fetchToken = async () => {
-      if (sessionStorage.getItem("accessToken") === null || !token) {
-        const userToken = await currentUser?.getIdToken();
-        if (userToken) {
+      if (!token && currentUser) {
+        try {
+          const userToken = await getIdToken(currentUser);
           sessionStorage.setItem("accessToken", userToken);
           setToken(userToken);
+        } catch (error) {
+          console.error("Error fetching user token:", error);
         }
       }
     };
@@ -50,14 +38,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     fetchToken();
   }, [currentUser, token]);
 
-  // Handle user subscription state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
     });
 
     return unsubscribe;
-  }, [currentUser]);
+  }, []);
 
   const authContextValue: AuthContextType = {
     currentUser,

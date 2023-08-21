@@ -11,19 +11,21 @@ import { BsPiggyBank } from "react-icons/bs";
 import { BsPeople } from "react-icons/bs";
 import { BsUniversalAccessCircle } from "react-icons/bs";
 import CommentForm from "../../components/comments/CommentForm";
+import ActivityComments from "../../components/activities/ActivityComments";
+import Rating from "../../components/ratings/Rating"
 
 type Props = {
   id: string;
 };
 
+
+
 export default function ActivityPage() {
-  // TODO add a hook for handling the form submit of a comment
-  // TODO refactor the details into separated cards and components
-  
 
   const { id } = useParams<Props>();
 
   const { data, isLoading, status } = useGetDefaultActivityDetails(id ?? "");
+
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -37,7 +39,8 @@ export default function ActivityPage() {
     <div className="flex flex-col m-auto">
       <img src={data.urls.regular} className="rounded-xl w-full m-auto"></img>
 
-      <h1 className="text-accent font-bold text-3xl mt-8">{data.name}</h1>
+    <Rating activityId={data.id}/>
+      <h1 className="text-accent font-bold text-3xl mt-4">{data.name}</h1>
       <span className="block text-sm my-2">Category:</span>
       <Badge className="w-min mt-2 p-2 bg-main/80 hover:bg-main text-mainDark">
         <span className="first-letter:capitalize">{data.type}</span>
@@ -106,7 +109,8 @@ export default function ActivityPage() {
 
       <hr className="my-4"></hr>
       <h2 className="text-xl text-accent">Add a Comment</h2>
-      <CommentForm />
+      <CommentForm activityId={data.id}/>
+      <ActivityComments activityId={data.id} />
     </div>
   );
 }

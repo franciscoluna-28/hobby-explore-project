@@ -43,7 +43,7 @@ export function useFirebase() {
       if (res.user) {
         setIsLoading(false);
         setSuccess("Account created successfully!");
-        createNewUser(auth, token ?? "");
+        createNewUser(auth, token!);
       }
     } catch (error) {
       // Checking if the error is a valid instance of FirebaseError
@@ -64,7 +64,7 @@ export function useFirebase() {
       if (res.user) {
         setIsLoading(false);
         setSuccess("Logged In Successfully!");
-        createNewUser(auth, token ?? "");
+        createNewUser(auth, token!);
       }
     } catch (error) {
       if (error instanceof FirebaseError) {
@@ -91,7 +91,7 @@ export function useFirebase() {
       const res = await signInWithPopup(auth, provider);
 
       if (res.user) {
-        createNewUserWithGoogle(auth, token ?? "");
+        createNewUserWithGoogle(auth, token!);
       }
     } catch (error) {
       if (error instanceof FirebaseError) {

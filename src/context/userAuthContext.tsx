@@ -3,7 +3,6 @@ import { User, getIdToken } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 
-// Contract to handle the Auth Context props
 interface AuthContextType {
   currentUser: User | null;
   token: string | null;
@@ -36,7 +35,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
 
     fetchToken();
-  }, [currentUser, token]);
+  }, [currentUser, token]); 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {

@@ -64,7 +64,7 @@ export function useFirebase() {
       if (res.user) {
         setIsLoading(false);
         setSuccess("Logged In Successfully!");
-        createNewUser(auth, token!);
+        createNewUser(auth, token! ?? sessionStorage.getItem("accessToken"));
       }
     } catch (error) {
       if (error instanceof FirebaseError) {
@@ -91,7 +91,7 @@ export function useFirebase() {
       const res = await signInWithPopup(auth, provider);
 
       if (res.user) {
-        createNewUserWithGoogle(auth, token ?? "");
+        createNewUserWithGoogle(auth, token! ?? sessionStorage.getItem("accessToken"));
       }
     } catch (error) {
       if (error instanceof FirebaseError) {

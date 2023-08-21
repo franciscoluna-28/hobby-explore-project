@@ -91,7 +91,7 @@ export function useFirebase() {
       const res = await signInWithPopup(auth, provider);
 
       if (res.user) {
-        createNewUserWithGoogle(auth, token!);
+        createNewUserWithGoogle(auth, token ?? "");
       }
     } catch (error) {
       if (error instanceof FirebaseError) {

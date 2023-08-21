@@ -60,7 +60,7 @@ export default function Profile() {
       ) : null}
       <BarChartSection data={getChartData()} />
 
-      <p>Make Account Private</p>
+      <p>Make Account Privated</p>
       <Switch className="bg-red-500"></Switch>
 
       <Button variant="secondary" onClick={handleLogout}>

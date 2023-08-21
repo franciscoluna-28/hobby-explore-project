@@ -9,12 +9,16 @@ import SaveActivityButton from "./SaveActivityButton";
 
 import { Link } from "react-router-dom";
 import ActivityHoverCard from "./ActivityHoverCard";
+import RatingOnlyVisible from "../ratings/RatingOnlyVisible";
+
+
 
 export default function ActivityCard(props: IPredefinedActivityCard) {
-  const { name, type, urls, id } = props;
+  const { name, type, urls, id, reviews, averageRating } = props;
 
   const { isSaved, saveActivity } = useActivityActions(props.id);
   const [isSaving, setIsSaving] = useState(false);
+  
 
   const handleSaveActivity = async () => {
     setIsSaving(true);
@@ -50,6 +54,7 @@ export default function ActivityCard(props: IPredefinedActivityCard) {
             <div className="flex items-center gap-2">
               <span className="block text-accent"></span>
             </div>
+            <RatingOnlyVisible averageRating={averageRating} totalRatings={reviews}/>
             <h5 className="text-start text-accent text-sm my-2 font-normal">
               Category:
             </h5>

@@ -18,29 +18,51 @@ import {
   Avatar,
 } from "../../components/ui/avatar";
 import { auth } from "../../firebase";
+import { useAddNewComment } from "../../features/comments/api/use-activity-comments";
+import { queryClient } from "../../lib/query-client-instance";
 
 const FormSchema = z.object({
-  bio: z
+  description: z
     .string()
     .min(10, {
-      message: "Bio must be at least 10 characters.",
+      message: "Your description must be at least 10 characters.",
     })
     .max(160, {
-      message: "Bio must not be longer than 30 characters.",
+      message: "Description must not be longer than 30 characters.",
     }),
 });
 
 // TODO add functionality
-// TODO divide schemas and types 
+// TODO divide schemas and types
 // TODO handle submit and mutations
 
-export default function CommentForm() {
+type Props = {
+  activityId: string;
+};
+
+export default function CommentForm({ activityId }: Props) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
+  const addNewCommentMutation = useAddNewComment(); // Usar el hook de mutación
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      // Ejecutar la mutación para agregar un comentario
+      await addNewCommentMutation.mutateAsync({
+        uid: auth.currentUser!.uid,
+        activityId: activityId, // Puedes obtenerlo de donde corresponda
+        commentText: data.description,
+      });
+
+      // Limpiar el formulario después de agregar el comentario
+      form.setValue("description", "");
+      queryClient.invalidateQueries(["commentsFromActivity", activityId]);
+      
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
   }
 
   return (
@@ -59,7 +81,7 @@ export default function CommentForm() {
         >
           <FormField
             control={form.control}
-            name="bio"
+            name="description"
             render={({ field }) => (
               <FormItem>
                 <FormControl>

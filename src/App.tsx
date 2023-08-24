@@ -16,6 +16,7 @@ import RecoverPassword from "./pages/auth/RecoverPassword";
 import Profile from "./pages/Profile";
 import ActivityPage from "./pages/activity/ActivityPage";
 import FAQ from "./pages/FAQ";
+import SavedActivities from "./pages/user/SavedActivities";
 
 function App() {
   const router = createBrowserRouter(
@@ -55,6 +56,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <FAQ />
+                </PrivateRoute>
+              }
+            ></Route>
+            <Route
+              path="/saved-activities/:uid"
+              element={
+                <PrivateRoute>
+                  <SavedActivities />
                 </PrivateRoute>
               }
             ></Route>

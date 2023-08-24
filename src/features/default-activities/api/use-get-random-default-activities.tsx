@@ -4,11 +4,11 @@ import { IPredefinedActivityCard } from "../../../types/default-activities";
 
 // API common endpoint
 // This is temporary and just to test the cards
-const QUERY_KEY = "activity/three-activities-from-db-with-type";
+const QUERY_KEY = "activity/random";
 
 // Gets 3 random activities from the Hobby Explore API
 async function getRecommendedDefaultActivities(): Promise<IPredefinedActivityCard[]> {
-  const { data } = await axios.get(`/${QUERY_KEY}?type=${"relaxation"}`);
+  const { data } = await axios.get(`/${QUERY_KEY}`);
   return data;
 }
 
@@ -29,3 +29,6 @@ async function getRecommendedDefaultActivitiesByCategory(category: string) {
   const { data } = await axios.get(`/${QUERY_KEY}/${category}`);
   return data;
 }
+
+// I don't even know how this works well
+`?type=${"relaxation"}`

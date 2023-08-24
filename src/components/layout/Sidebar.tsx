@@ -7,8 +7,12 @@ import { RenderLink } from "./RenderLink";
 import Logo from "../../assets/logo.png";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 
+type Props = {
+  uid: string;
+};
+
 // Sidebar page of Hobby Explore
-export default function Sidebar() {
+export default function Sidebar({ uid }: Props) {
   return (
     <div className="sticky max-h-3 z-50 top-0">
       <aside className="bg-white shadow-normal min-h-screen w-full px-8 py-8 border-r-2 max-w-xs">
@@ -24,7 +28,7 @@ export default function Sidebar() {
             text="Discover Activities"
           />
           <RenderLink
-            path="/my-activities"
+            path={`/saved-activities/${uid}`}
             icon={BsBookmarksFill}
             text="Saved-Activities"
           />

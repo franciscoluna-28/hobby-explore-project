@@ -15,6 +15,7 @@ import {
   createNewUser,
   createNewUserWithGoogle,
 } from "../features/user-actions/api/use-register-user";
+import { queryClient } from "../lib/query-client-instance";
 
 /**
  * @constant [isLoading, setIsloading] Loading state.
@@ -38,7 +39,9 @@ export function useFirebase() {
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
       if (res.user) {
+        
         setIsLoading(false);
+        queryClient.removeQueries();
         setSuccess("Account created successfully!");
 
         const userToken = await auth.currentUser?.getIdToken();
@@ -63,6 +66,7 @@ export function useFirebase() {
       const res = await signInWithEmailAndPassword(auth, email, password);
       if (res.user) {
         setIsLoading(false);
+        queryClient.removeQueries();
         setSuccess("Logged In Successfully!");
 
         const userToken = await auth.currentUser?.getIdToken();
@@ -83,6 +87,7 @@ export function useFirebase() {
     try {
       signOut(auth);
       deleteTokenFromSessionStorage();
+      queryClient.removeQueries();
       <Navigate to="/" replace={true} />;
     } catch {
       alert("Error!");
@@ -95,6 +100,7 @@ export function useFirebase() {
       const res = await signInWithPopup(auth, provider);
 
       if (res.user) {
+        queryClient.removeQueries();
         setIsLoading(false);
 
         const userToken = await auth.currentUser?.getIdToken();

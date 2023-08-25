@@ -11,6 +11,10 @@ async function getRecommendedDefaultActivities(): Promise<IPredefinedActivityCar
   const { data } = await axios.get(`/${QUERY_KEY}`);
   return data;
 }
+async function getRecommendedDefaultActivitiesFromDB(type: string): Promise<IPredefinedActivityCard[]> {
+  const { data } = await axios.get(`activity/three-activities-from-db-with-type?type=${type}`);
+  return data;
+}
 
 // Gets 3 random activities within a category
 export function useRecommendedDefaultActivities() {
@@ -22,6 +26,12 @@ export function useRecommendedDefaultActivities() {
 export function useRecommendedDefaultActivitiesByCategory(category: string) {
   return useQuery(["recommendedActivities", category], () =>
     getRecommendedDefaultActivitiesByCategory(category)
+  );
+}
+
+export function useRecommendedDefaultActivitiesByCategoryFromDB(category: string) {
+  return useQuery(["recommendedActivitiesWithCategoryDB", category], () =>
+    getRecommendedDefaultActivitiesFromDB(category)
   );
 }
 

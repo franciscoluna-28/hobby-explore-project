@@ -17,6 +17,7 @@ import Profile from "./pages/Profile";
 import ActivityPage from "./pages/activity/ActivityPage";
 import FAQ from "./pages/FAQ";
 import SavedActivities from "./pages/user/SavedActivities";
+import CreateActivity from "./pages/activity/CreateActivityPage";
 
 function App() {
   const router = createBrowserRouter(
@@ -64,6 +65,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <SavedActivities />
+                </PrivateRoute>
+              }
+            ></Route>
+            <Route
+              path="/create-activity"
+              element={
+                <PrivateRoute>
+                  <CreateActivity/>
                 </PrivateRoute>
               }
             ></Route>

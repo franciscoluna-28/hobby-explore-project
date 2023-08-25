@@ -6,7 +6,6 @@ import { useGetGlobalFavoriteCategories } from "../features/user-actions/api/use
 import { CategoryInformation } from "../types/stats";
 import { Button } from "../components/ui/button";
 import { useFirebase } from "../hooks/useFirebase";
-import { Switch } from "../components/ui/switch";
 import ContinueWithGoogle from "../components/auth/ContinueWithGoogle";
 
 export type FavoriteCategories = Array<{
@@ -48,9 +47,10 @@ export default function Profile() {
       <h2 className="text-accent font-bold text-xl mt-4">
         {auth.currentUser?.displayName ?? "Anonymous User"}
       </h2>
-      <h2>Created at {auth.currentUser?.metadata.creationTime}</h2>
+      <h2 className="text-center my-2">Created at {auth.currentUser?.metadata.creationTime}</h2>
       {!auth.currentUser?.photoURL && !auth.currentUser?.displayName ? (
         <>
+        <p className="text-slate-500 text-center text-sm mt-2 max-w-lg leading-relaxed">You're considered an anonymous user when you're not logged in with Google. Sign in with Google to display your information.</p>
           <ContinueWithGoogle
             className="mt-4"
             continueWithGoogle={continueWithGoogle}
@@ -59,15 +59,15 @@ export default function Profile() {
         </>
       ) : null}
       <BarChartSection data={getChartData()} />
-
-      <p>Make Account Privated</p>
-      <Switch className="bg-red-500"></Switch>
-
-      <Button variant="secondary" onClick={handleLogout}>
+      <Button className="mt-4" variant="secondary" onClick={handleLogout}>
         Logout
       </Button>
+{/*       <p>Make Account Private</p>
+      <Switch className="bg-red-500"></Switch>
 
-      <Button variant="destructive">Delete Account</Button>
+
+
+      <Button variant="destructive">Delete Account</Button> */}
     </main>
   );
 }

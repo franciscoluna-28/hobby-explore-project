@@ -13,6 +13,9 @@ import { BsUniversalAccessCircle } from "react-icons/bs";
 import CommentForm from "../../components/comments/CommentForm";
 import ActivityComments from "../../components/activities/ActivityComments";
 import Rating from "../../components/ratings/Rating"
+import { useRecommendedDefaultActivitiesByCategoryFromDB } from "../../features/default-activities/api/use-get-random-default-activities";
+import { Link } from "react-router-dom";
+import { Skeleton } from "../../components/ui/skeleton";
 
 type Props = {
   id: string;
@@ -25,10 +28,25 @@ export default function ActivityPage() {
   const { id } = useParams<Props>();
 
   const { data, isLoading, status } = useGetDefaultActivityDetails(id ?? "");
+  const { data: activities} = useRecommendedDefaultActivitiesByCategoryFromDB(data?.type!)
 
+  console.log(data)
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return(
+      <div className="m-auto">
+        <Skeleton className="w-[1000px] h-[600px]"/>
+        <Skeleton className="w-96 mt-4 h-8"/>
+        <Skeleton className="w-[600px] mt-4 h-8"/>
+        <Skeleton className="w-16 mt-4 h-8"/>
+        <div className="mt-4 flex gap-4">
+          <Skeleton className="w-48 h-32"/>
+          <Skeleton className="w-48 h-32"/>
+          <Skeleton className="w-48 h-32"/>
+          </div>
+          <Skeleton className="w-[1000px] mt-4 h-32"/>
+      </div>
+    )
   }
 
   if (status === "error" || !data) {
@@ -106,6 +124,13 @@ export default function ActivityPage() {
           <p>{data.description}</p>
         )}
       </p>
+
+      {activities?.map((activity) => (
+  <li key={activity.id}>
+    {activity.name}
+    <Link to={`/activities/${activity.id}`}>Ver actividad</Link>
+  </li>
+))}
 
       <hr className="my-4"></hr>
       <h2 className="text-xl text-accent">Add a Comment</h2>

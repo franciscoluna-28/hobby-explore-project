@@ -1,34 +1,49 @@
-import { useState } from "react";
+import { useRef, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { useIntersection } from "@mantine/hooks";
 import { axios } from "../../features/axios";
-import React from "react";
+import ActivityCard from "../../components/activities/ActivityCard";
 import { IPredefinedActivity } from "../../types/default-activities";
 
 function SavedActivities() {
+
+  // UID obtained through the params to get the user activities data
   const { uid } = useParams();
-  const [page, setPage] = useState(0);
 
-  // Fetch function
+  // Getting the saved activities from an user
   const fetchSavedActivities = (page: number) =>
-    axios
-      .get(`/user/default-activities/${uid}?page=${page}`)
-      .then((res) => res.data);
+    axios.get(`/user/default-activities/${uid}?page=${page}`).then((res) => res.data);
 
-  // Use the useInfiniteQuery hook to manage paginated data fetching
-  const {
-    data,
-    isLoading,
-    isError,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["savedActivities", page],
-    queryFn: () => fetchSavedActivities(page),
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["savedActivities"],
+      queryFn: ({ pageParam = 1}) => fetchSavedActivities(pageParam),
+      getNextPageParam: (lastPage, allPages) => {
+  if (lastPage && lastPage.length === 0) {
+    return null; // No more data to load
+  }
+  return allPages.length + 1; // Increase the page number
+},
+
+    });
+
+  // Saving the ref of the last activity
+  const lastActivityRef = useRef<HTMLDivElement>(null);
+  const { ref, entry } = useIntersection({
+    root: lastActivityRef.current,
+    threshold: 1,
   });
+
+  // Detecting the intersection by checking the last activity 
+  // This way the infinite scrolling behavior will work properly
+  useEffect(() => {
+    if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage && !isLoading && !isError) {
+      fetchNextPage();
+    }
+  }, [entry]);
+
+  const activities = data?.pages.flatMap((page) => page) || [];
 
   return (
     <div>
@@ -37,21 +52,15 @@ function SavedActivities() {
       ) : isError ? (
         <div>Error</div>
       ) : (
-        <div>
-          {data.pages.map((page, i) => (
-            <React.Fragment key={i}>
-              {page.map((activity: IPredefinedActivity) => (
-                <li key={activity.id}>{activity.name}</li>
-              ))}
-            </React.Fragment>
+        <div className="columns-1 sm:columns-2 w-full space-y-8 mt-8 lg:columns-3">
+          {activities.map((activity: IPredefinedActivity, i) => (
+            <ActivityCard key={activity.id} {...activity} />
           ))}
+          <div ref={ref}></div>
         </div>
       )}
-      <button onClick={() => setPage((page) => page - 1)} disabled={page === 1}>
-        Previous Page
-      </button>
-      <button onClick={() => setPage((page) => page + 1)} disabled={page === 2}>
-        Next Page
+      <button className="" onClick={() => fetchNextPage()} disabled={isFetchingNextPage || isLoading || !hasNextPage}>
+        {isFetchingNextPage ? "Loading more..." : hasNextPage ? "Load More" : "Nothing More to Load"}
       </button>
     </div>
   );

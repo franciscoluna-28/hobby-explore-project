@@ -13,10 +13,10 @@ function SavedActivities() {
   // UID obtained through the params to get the user activities data
   const { uid } = useParams();
 
-  // Getting the saved activities from an user
+  // Getting the saved activities from a user
   const fetchSavedActivities = (page: number) =>
     axios
-      .get(`/user/default-activities/${uid}?page=${page}`)
+      .get(`/activity/user-activities/${uid}?page=${page}`)
       .then((res) => res.data);
 
   const {
@@ -59,7 +59,8 @@ function SavedActivities() {
     }
   }, [entry]);
 
-  const activities = data?.pages.flatMap((page) => page) || [];
+  // Access the correct data structure
+  const activities = data?.pages.flatMap((page) => page.docs) || [];
 
   if (activities.length === 0) {
     return (
@@ -78,8 +79,6 @@ function SavedActivities() {
   }
 
   return (
-    
-
     <div>
       <h1 className="font-bold text-4xl">My Activities</h1>
       {isLoading ? (

@@ -1,6 +1,5 @@
 import { useAddActivityToUser } from "../features/default-activities/api/use-activity-actions";
 import { useIsActivitySavedByUser } from "../features/default-activities/api/use-get-activity-saved-state";
-import { IPredefinedActivityCard } from "../types/default-activities";
 import { useAuth } from "./useAuth";
 import { useEffect, useState } from "react";
 
@@ -13,11 +12,12 @@ export function useActivityActions(id: string) {
 
   const [isSaved, setIsSaved] = useState(data?.valueOf());
 
-  const saveActivity = async (activityData: IPredefinedActivityCard) => {
+  const saveActivity = async (id: string) => {
     try {
+      console.log(id);
       await addActivityToUserMutation.mutateAsync({
         uid: currentUser!.uid,
-        activityData,
+        id,
       });
       refetch(); // Refresh the saved state after successful save
       console.log(isSaved)

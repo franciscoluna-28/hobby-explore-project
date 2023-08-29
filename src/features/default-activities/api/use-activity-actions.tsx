@@ -1,8 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { axios } from "../../axios";
-import { IPredefinedActivityCard } from "../../../types/default-activities";
-
-const QUERY_KEY = "user";
+/* 
+const QUERY_KEY = "user"; */
 
 interface AddActivityToUserMutationResult {
   success: boolean;
@@ -11,12 +10,12 @@ interface AddActivityToUserMutationResult {
 
 async function addActivityToUserRequest(
   uid: string,
-  activityData: IPredefinedActivityCard
+  id: string
 ): Promise<AddActivityToUserMutationResult> {
   try {
     const response = await axios.post(
-      `${QUERY_KEY}/save-default-activity/${uid}`,
-      activityData
+      `/activity/save-default-activity/${uid}`,
+      { id } // Send the id as the request body
     );
     return response.data;
   } catch (error) {
@@ -27,14 +26,7 @@ async function addActivityToUserRequest(
 }
 
 export function useAddActivityToUser() {
-  return useMutation(
-    (data: { uid: string; activityData: IPredefinedActivityCard }) =>
-      addActivityToUserRequest(data.uid, data.activityData),
-    {
-      // Aquí puedes manejar los efectos secundarios cuando la mutación está en proceso
-      // onMutate: ...
-      // Aquí puedes manejar los efectos secundarios cuando la mutación es exitosa
-      // onSuccess: ...
-    }
+  return useMutation((data: { uid: string; id: string }) =>
+    addActivityToUserRequest(data.uid, data.id)
   );
 }

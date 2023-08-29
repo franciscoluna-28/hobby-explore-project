@@ -22,8 +22,9 @@ export default function ActivityCard(props: IPredefinedActivityCard) {
 
   const handleSaveActivity = async () => {
     setIsSaving(true);
+    console.log(id)
     try {
-      await saveActivity(props);
+      await saveActivity(props.id);
     } catch (error) {
       console.error("Error saving activity:", error);
     } finally {

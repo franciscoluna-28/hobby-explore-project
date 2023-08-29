@@ -15,13 +15,15 @@ export function createNewUser(auth: Auth, bearerToken: string) {
     createdAt: auth.currentUser?.metadata.creationTime,
   };
 
-  axios.post(`${QUERY_KEY}/register`, requestData)
-    .then(response => {
-      console.log(requestData)
+  // TODO: Don't return the user information, only a success message
+  axios
+    .post(`${QUERY_KEY}/register`, requestData)
+    .then((response) => {
+      console.log(requestData);
       console.log("User registration successful:", response.data);
     })
-    .catch(error => {
-      console.log(requestData)
+    .catch((error) => {
+      console.log(requestData);
       console.error("User registration failed:", error);
     });
 }
@@ -38,13 +40,13 @@ export function createNewUserWithGoogle(auth: Auth, bearerToken: string) {
     createdAt: auth.currentUser?.metadata.creationTime,
   };
 
-  axios.post(`${QUERY_KEY}/register`, requestData)
-    .then(response => {
+  // TODO: Don't return the user information, only a success message
+  axios
+    .post(`${QUERY_KEY}/register`, requestData)
+    .then((response) => {
       console.log("User registration with Google successful:", response.data);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("User registration with Google failed:", error);
     });
 }
-
-

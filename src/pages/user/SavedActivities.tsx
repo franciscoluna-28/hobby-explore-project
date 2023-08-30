@@ -80,9 +80,8 @@ function SavedActivities() {
 
   return (
     <div>
-      <h1 className="font-bold text-4xl">My Activities</h1>
       {isLoading ? (
-        <RecommendedActivitiesSkeleton numberOfActivities={9} />
+        <RecommendedActivitiesSkeleton numberOfActivities={6} />
       ) : isError ? (
         <ErrorScreen
           message="Oops. We couldn't load your activities. Want to give us another try?"
@@ -96,12 +95,15 @@ function SavedActivities() {
           }
         />
       ) : (
-        <div className="columns-1 sm:columns-2 w-full space-y-8 mt-8 lg:columns-3">
-          {activities.map((activity: IPredefinedActivity) => (
-            <ActivityCard key={activity.id} {...activity} />
-          ))}
-          <div ref={ref}></div>
-        </div>
+        <>
+          <h1 className="font-bold text-4xl">My Activities</h1>
+          <div className="columns-1 sm:columns-2 w-full space-y-8 mt-8 lg:columns-3">
+            {activities.map((activity: IPredefinedActivity) => (
+              <ActivityCard key={activity.id} {...activity} />
+            ))}
+            <div ref={ref}></div>
+          </div>
+        </>
       )}
       <button
         className="hidden"

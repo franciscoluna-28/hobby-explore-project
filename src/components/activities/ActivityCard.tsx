@@ -34,12 +34,25 @@ export default function ActivityCard(props: IPredefinedActivityCard) {
 
   return (
     <article className="rounded-xl overflow-hidden relative w-full shadow-lg hover:shadow-xl duration-200 md:max-w-xs lg:max-w-md">
-      <img
-        className="overflow-hidden rounded-t-xl shadow-xl duration-200 z-20"
-        loading="lazy"
-        src={urls.regular}
-        alt="Activity"
-      />
+ <Link
+        to={`/activities/${id}`}
+        className="w-min min-w-fit rounded-xl duration-200 underline underline-offset-2 text-sm flex items-center gap-2 group"
+      >
+        {/* Container for image and text */}
+        <div className="relative">
+          {/* Darkened image */}
+          <img
+            className="overflow-hidden rounded-t-xl shadow-xl duration-200 z-20 group-hover:brightness-90"
+            loading="lazy"
+            src={urls.regular}
+            alt="Activity"
+          />
+          {/* Hover text */}
+          <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white bg-black bg-opacity-60 rounded-lg py-1 px-2 text-xs opacity-0 group-hover:opacity-100 duration-200">
+            Learn more
+          </span>
+        </div>
+      </Link>
 
       <SaveActivityButton
         isSaved={isSaved}
@@ -67,13 +80,6 @@ export default function ActivityCard(props: IPredefinedActivityCard) {
         </div>
 
         <div className="flex gap-2 mt-4">
-          <Link
-            to={`/activities/${id}`}
-            className=" w-min min-w-fit rounded-xl  duration-200 underline underline-offset-2 text-sm flex items-center gap-2"
-          >
-            Learn More
-            <RiInformationLine className="text-accent text-2xl"></RiInformationLine>
-          </Link>
         </div>
         <div className="mt-4"></div>
 

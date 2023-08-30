@@ -1,12 +1,11 @@
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
-import Header from "./Header";
 import { useAuth } from "../../hooks/useAuth";
-
+import BottomNavbar from "./BottomNavbar";
+import { Toaster } from "../ui/toaster";
 
 export default function RootLayout() {
-
-  const { currentUser} = useAuth();
+  const { currentUser } = useAuth();
 
   return (
     <>
@@ -14,9 +13,11 @@ export default function RootLayout() {
         <div className="col-span-1 hidden md:block">
           <Sidebar uid={currentUser?.uid!} />
         </div>
-       <Header/>
+        <BottomNavbar uid={currentUser?.uid!} />
         <div className="col-span-5 flex container p-8">
+        <Toaster />          
           <Outlet />
+
         </div>
       </main>
     </>

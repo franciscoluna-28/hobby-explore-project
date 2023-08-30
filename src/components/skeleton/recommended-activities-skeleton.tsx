@@ -9,9 +9,9 @@ export default function RecommendedActivitiesSkeleton({
   numberOfActivities,
 }: Props) {
   return (
-    <div className="flex flex-col">
-      <Skeleton className="w-48 h-12" />
-      <div className="columns-1 space-y-8 sm:columns-2 w-full mt-8 lg:columns-3">
+    <div className="flex flex-wrap h-screen m-auto ">
+      <Skeleton className="w-64 h-12 bg-slate-300" />
+      <div className="columns-1 sm:columns-2 w-full h-min space-y-8 mt-8 lg:columns-3">
         {Array.from({ length: numberOfActivities }).map((_, index) => (
           <ActivitySkeleton key={index} />
         ))}

@@ -26,27 +26,40 @@ export default function Sidebar({ uid }: Props) {
             path="/home"
             icon={MdExplore}
             text="Discover Activities"
+            isMobile={false}
           />
           <RenderLink
             path={`/saved-activities/${uid}`}
             icon={BsBookmarksFill}
             text="Saved-Activities"
+            isMobile={false}
           />
           <RenderLink
             path="/create-activity"
             icon={ImPencil2}
             text="Create Activity"
+            isMobile={false}
           />
         </ul>
         <hr></hr>
         <h5 className="text-accent mt-3 font-bold text-normal">Me</h5>
         <ul className="py-2 flex flex-col gap-2">
-          <RenderLink path="/profile" icon={BiSolidUser} text="My Profile" />
+          <RenderLink
+            path="/profile"
+            icon={BiSolidUser}
+            text="My Profile"
+            isMobile={false}
+          />
         </ul>
         <hr></hr>
         <h5 className="text-accent mt-3 font-bold text-normal">More</h5>
         <ul className="py-2">
-          <RenderLink path="/faq" icon={BsQuestionLg} text="FAQ" />
+          <RenderLink
+            isMobile={false}
+            path="/faq"
+            icon={BsQuestionLg}
+            text="FAQ"
+          />
         </ul>
         <hr></hr>
       </aside>

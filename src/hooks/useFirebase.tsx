@@ -76,10 +76,12 @@ export function useFirebase() {
       const res = await signInWithPopup(auth, provider);
       if (res.user) {
         const userToken = await auth.currentUser?.getIdToken()!;
+        createNewUserWithGoogle(auth, userToken!); // Removed unnecessary checks
         setToken(userToken); // Also set the token here
         await registerUserToken(res.user.uid, userToken!);
-        createNewUserWithGoogle(auth, userToken!); // Removed unnecessary checks
-        await registerUserToken(res.user.uid, userToken!);
+        
+
+
 
 
       }

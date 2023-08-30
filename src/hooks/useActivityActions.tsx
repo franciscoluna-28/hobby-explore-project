@@ -1,3 +1,4 @@
+import { useToast } from "../components/ui/use-toast";
 import { useAddActivityToUser } from "../features/default-activities/api/use-activity-actions";
 import { useIsActivitySavedByUser } from "../features/default-activities/api/use-get-activity-saved-state";
 import { useAuth } from "./useAuth";
@@ -6,6 +7,7 @@ import { useEffect, useState } from "react";
 export function useActivityActions(id: string) {
   const { currentUser } = useAuth();
   const { uid } = currentUser!;
+  const { toast } = useToast();
 
   const { data, refetch } = useIsActivitySavedByUser(uid, id);
   const addActivityToUserMutation = useAddActivityToUser();
@@ -20,6 +22,10 @@ export function useActivityActions(id: string) {
         id,
       });
       refetch(); // Refresh the saved state after successful save
+      toast({
+        title: "✅ Activity Saved Successfully",
+        description: "You've added a new activity to your list!",
+      })
       console.log(isSaved)
     } catch (error) {
       console.error("Error saving activity:", error);

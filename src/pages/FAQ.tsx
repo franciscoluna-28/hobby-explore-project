@@ -11,7 +11,7 @@ export default function FAQ() {
       <h1 className="text-2xl font-bold">Frequently Asked Questions</h1>
       <Accordion type="single" collapsible className="w-full mt-4">
         <AccordionItem value="item-1">
-          <AccordionTrigger className="font-normal">What is Hobby Explore?</AccordionTrigger>
+          <AccordionTrigger className="font-normal text-start">What is Hobby Explore?</AccordionTrigger>
           <AccordionContent>
             Hobby Explore is an application I've created to help you discover
             cool hobbies and activities. Powered by BoredAPI and the awesome
@@ -19,7 +19,7 @@ export default function FAQ() {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2">
-          <AccordionTrigger className="font-normal">Why did I create Hobby Explore?</AccordionTrigger>
+          <AccordionTrigger className="font-normal text-start">Why did I create Hobby Explore?</AccordionTrigger>
           <AccordionContent>
             I made this app because I want you to find cool stuff to do and
             connect with friendly people who share your interests. It's like a
@@ -31,7 +31,7 @@ export default function FAQ() {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3">
-          <AccordionTrigger className="font-normal">
+          <AccordionTrigger className="font-normal text-start">
             {" "}
             Why don't some images match the activity name?
           </AccordionTrigger>
@@ -43,7 +43,7 @@ export default function FAQ() {
           </AccordionContent>
         </AccordionItem >
         <AccordionItem value="item-4">
-          <AccordionTrigger className="font-normal">
+          <AccordionTrigger className="font-normal text-start">
             {" "}
             How did the idea start?
           </AccordionTrigger>

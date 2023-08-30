@@ -31,6 +31,7 @@ export default function LoginForm() {
     },
   });
 
+  // TODO: change this to a useEffect function
   if (currentUser !== null) {
     () => navigate("/home");
   }

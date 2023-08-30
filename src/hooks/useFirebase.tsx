@@ -51,7 +51,7 @@ export function useFirebase() {
         const userToken = await auth.currentUser?.getIdToken()!;
         setToken(userToken); // Always set the token here to keep it up-to-date
         await registerUserToken(res.user.uid, userToken!);
-        await createNewUser(auth, userToken!);
+        createNewUser(auth, userToken!);
       }
     }, "Account created successfully!");
   }
@@ -76,8 +76,10 @@ export function useFirebase() {
       if (res.user) {
         const userToken = await auth.currentUser?.getIdToken()!;
         setToken(userToken); // Also set the token here
-        await registerUserToken(res.user.uid, userToken!);
         createNewUserWithGoogle(auth, userToken!); // Removed unnecessary checks
+        await registerUserToken(res.user.uid, userToken!);
+
+
       }
     }, "Google Sign-In Successful!");
   }

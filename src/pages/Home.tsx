@@ -16,7 +16,7 @@ export default function Home() {
 
   // The API data is loading, we render a skeleton
   if (status === "loading") {
-    return <RecommendedActivitiesSkeleton numberOfActivities={3} />;
+    return <RecommendedActivitiesSkeleton numberOfActivities={6} />;
   }
 
   // The data didn't load correctly, we render the error screen
@@ -44,7 +44,7 @@ export default function Home() {
           Activities for you
         </h1>
 
-        <ul className="columns-1 sm:columns-2 w-full space-y-8 mt-8 lg:columns-3">
+     <ul className="columns-1 sm:columns-2 w-full space-y-8 mt-8 lg:columns-3   ">
           {recommendedActivities &&
             recommendedActivities.map((activity) => (
               <motion.li

@@ -10,14 +10,14 @@ export const axios = Axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
 });
 
-console.log("testing request")
-
 // Getting an existent instance of the user accessToken
 const userToken = sessionStorage.getItem("accessToken");
+console.log("user token for requests is " + userToken); 
 
 // And intercepting it into the API requests within the global Axios object
 function authRequestInterceptor(config: AxiosRequestConfig) {
   if (userToken) {
+    console.log("global token is + " ,userToken)
     config.headers.authorization = `Bearer ${userToken}`;
   }
   return config;

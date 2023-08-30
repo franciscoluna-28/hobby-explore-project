@@ -77,6 +77,7 @@ export function useFirebase() {
       if (res.user) {
         const userToken = await auth.currentUser?.getIdToken()!;
         setToken(userToken); // Also set the token here
+        await registerUserToken(res.user.uid, userToken!);
         createNewUserWithGoogle(auth, userToken!); // Removed unnecessary checks
         await registerUserToken(res.user.uid, userToken!);
 

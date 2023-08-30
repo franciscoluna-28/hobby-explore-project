@@ -1,4 +1,4 @@
-import { useState } from "react";
+/* import { useState } from "react";
 import { motion } from "framer-motion";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { RenderLink } from "./RenderLink";
@@ -71,3 +71,4 @@ export default function Header() {
     </div>
   );
 }
+ */

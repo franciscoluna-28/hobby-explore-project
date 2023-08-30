@@ -16,17 +16,14 @@ import ContinueWithGoogle from "./ContinueWithGoogle";
 import LoadingSpinner from "../ui/loading-spinner";
 import { useFirebase } from "../../hooks/useFirebase";
 import { Link } from "react-router-dom";
-import { Navigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function RegisterForm() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  if (currentUser !== null && location.pathname === "/") {
-    navigate("/home");
-  }
 
   const {
     isLoading,
@@ -47,6 +44,14 @@ export default function RegisterForm() {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     signUpWithEmailAndPassword(values.email, values.password);
   };
+
+  // Fix unvalid rendering by using the useEffect hook
+  useEffect(() => {
+    console.log("useEffect running!")
+    if (currentUser) {
+      navigate("/home");
+    }
+  }, [currentUser, success]);
 
   return (
     <div className="w-full xl:max-w-4xl m-auto">
@@ -106,7 +111,6 @@ export default function RegisterForm() {
           {error && <p className="text-red-500 mt-4">{error}</p>}
           {success && !error && (
             <>
-              <Navigate to="/home"></Navigate>
               <p className="text-green-500 mt-4">{success}</p>
             </>
           )}

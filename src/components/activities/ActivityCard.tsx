@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Badge } from "../ui/badge";
 import { useActivityActions } from "../../hooks/useActivityActions";
 import { Button } from "../ui/button";
-import { RiInformationLine } from "react-icons/ri";
 import { FaLightbulb } from "react-icons/fa";
 import SaveActivityButton from "./SaveActivityButton";
 

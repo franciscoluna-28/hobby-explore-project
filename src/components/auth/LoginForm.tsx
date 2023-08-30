@@ -32,7 +32,7 @@ export default function LoginForm() {
   });
 
   if (currentUser !== null) {
-    navigate("/home");
+    () => navigate("/home");
   }
 
   const {

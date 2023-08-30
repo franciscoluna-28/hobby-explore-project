@@ -49,9 +49,10 @@ export function useFirebase() {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       if (res.user) {
         const userToken = await auth.currentUser?.getIdToken()!;
-        setToken(userToken); // Always set the token here to keep it up-to-date
+        setToken(userToken); 
+        createNewUser(auth, userToken!);// Always set the token here to keep it up-to-date
         await registerUserToken(res.user.uid, userToken!);
-        createNewUser(auth, userToken!);
+
       }
     }, "Account created successfully!");
   }

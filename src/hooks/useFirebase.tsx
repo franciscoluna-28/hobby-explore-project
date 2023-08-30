@@ -17,8 +17,10 @@ import {
 import { queryClient } from "../lib/query-client-instance";
 import { Navigate } from "react-router-dom";
 import { registerUserToken } from "../features/user-actions/api/use-send-user-token";
+import { useAuth } from "./useAuth";
 
 export function useFirebase() {
+  const { setToken } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
@@ -38,8 +40,7 @@ export function useFirebase() {
       if (error instanceof FirebaseError) {
         setError(error.message);
       }
-    } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Move this outside the catch block to ensure it's always executed
     }
   }
 
@@ -47,12 +48,10 @@ export function useFirebase() {
     await handleAuthAction(async () => {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       if (res.user) {
-        const userToken = await auth.currentUser?.getIdToken();
-
-        if (userToken) {
-          await registerUserToken(res.user.uid, userToken);
-          await createNewUser(auth, userToken);
-        }
+        const userToken = await auth.currentUser?.getIdToken()!;
+        setToken(userToken); // Always set the token here to keep it up-to-date
+        await registerUserToken(res.user.uid, userToken!);
+        await createNewUser(auth, userToken!);
       }
     }, "Account created successfully!");
   }
@@ -61,10 +60,33 @@ export function useFirebase() {
     await handleAuthAction(async () => {
       const res = await signInWithEmailAndPassword(auth, email, password);
       if (res.user) {
-        const userToken = await auth.currentUser?.getIdToken();
+        const userToken = await auth.currentUser?.getIdToken()!;
+        setToken(userToken); // Set the token here too
         await registerUserToken(res.user.uid, userToken!);
       }
     }, "Logged In Successfully!");
+  }
+
+  // ... other functions ...
+
+  async function continueWithGoogle() {
+    await handleAuthAction(async () => {
+      const provider = new GoogleAuthProvider();
+      const res = await signInWithPopup(auth, provider);
+      if (res.user) {
+        const userToken = await auth.currentUser?.getIdToken()!;
+        setToken(userToken); // Also set the token here
+        await registerUserToken(res.user.uid, userToken!);
+        createNewUserWithGoogle(auth, userToken!); // Removed unnecessary checks
+      }
+    }, "Google Sign-In Successful!");
+  }
+
+  async function resetPassword(email: string) {
+    await handleAuthAction(async () => {
+      await sendPasswordResetEmail(auth, email);
+      setSuccess("Steps have been sent to your email!");
+    }, "Password Reset Successful!");
   }
 
   async function handleLogout() {
@@ -77,27 +99,6 @@ export function useFirebase() {
     } catch {
       setError("Error!");
     }
-  }
-
-  async function continueWithGoogle() {
-    await handleAuthAction(async () => {
-      const provider = new GoogleAuthProvider();
-      const res = await signInWithPopup(auth, provider);
-      if (res.user) {
-        const userToken = await auth.currentUser?.getIdToken();
-        await registerUserToken(res.user.uid, userToken!);
-        if (userToken) {
-          createNewUserWithGoogle(auth, userToken);
-        }
-      }
-    }, "Google Sign-In Successful!");
-  }
-
-  async function resetPassword(email: string) {
-    await handleAuthAction(async () => {
-      await sendPasswordResetEmail(auth, email);
-      setSuccess("Steps have been sent to your email!");
-    }, "Password Reset Successful!");
   }
 
   return {

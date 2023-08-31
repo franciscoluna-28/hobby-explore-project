@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-interface WithEditModeProps {
+export interface WithEditModeProps {
   isEditMode: boolean;
   toggleEditMode: () => void;
 }

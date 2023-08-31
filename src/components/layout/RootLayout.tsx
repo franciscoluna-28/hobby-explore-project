@@ -14,7 +14,7 @@ export default function RootLayout() {
           <Sidebar uid={currentUser?.uid!} />
         </div>
         <BottomNavbar uid={currentUser?.uid!} />
-        <div className="col-span-5 flex container p-8">
+        <div className="col-span-5 flex container p-8 mb-12 md:mb-0">
         <Toaster />          
           <Outlet />
 

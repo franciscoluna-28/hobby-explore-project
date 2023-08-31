@@ -80,10 +80,10 @@ export default function ActivityCard(props: IPredefinedActivityCard) {
 
         <div className="flex gap-2 mt-4">
         </div>
-        <div className="mt-4"></div>
+        <div className=""></div>
 
         <ActivityHoverCard activity={props}>
-          <Button className="bg-transparent  hover:bg-slate-100 text-accent/70 mt-4 flex items-center gap-2">
+          <Button className="bg-transparent  hover:bg-slate-100 text-accent/70 flex items-center gap-2">
             <FaLightbulb className="text-accent"></FaLightbulb>
             Hover to see more
           </Button>

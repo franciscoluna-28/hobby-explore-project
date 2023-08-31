@@ -7,16 +7,27 @@ import { CategoryInformation } from "../types/stats";
 import { Button } from "../components/ui/button";
 import { useFirebase } from "../hooks/useFirebase";
 import ContinueWithGoogle from "../components/auth/ContinueWithGoogle";
+import UserDescription from "../components/profile/user-description";
+import { useParams } from "react-router-dom";
 
 export type FavoriteCategories = Array<{
   name: string;
   Total: number;
 }>;
 
+
+// Current user will have its own page
 export default function Profile() {
+
+  const { uid } = useParams();
+
+  console.log(uid);
+
   const favoriteCategoriesQuery = useGetGlobalFavoriteCategories(
-    auth.currentUser?.uid ?? ""
+    uid!
   );
+
+
 
   const favoriteCategories = favoriteCategoriesQuery.data;
   const { handleLogout, continueWithGoogle } = useFirebase();
@@ -58,6 +69,7 @@ export default function Profile() {
           />
         </>
       ) : null}
+      <UserDescription uid={uid!}/>
       <BarChartSection data={getChartData()} />
       <Button className="mt-4" variant="secondary" onClick={handleLogout}>
         Logout

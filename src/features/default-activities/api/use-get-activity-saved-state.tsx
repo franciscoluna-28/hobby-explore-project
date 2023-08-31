@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { axios } from "../../axios";
 
-const QUERY_KEY = "user";
+const QUERY_KEY = "activity";
 
 async function getIsActivitySavedByUser(
   uid: string,

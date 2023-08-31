@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 import { User, getIdToken } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
+import { useGlobalAxiosInstance } from "../features/axios";
 
 interface AuthContextType {
   currentUser: User | null;
@@ -16,26 +17,27 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [token, setToken] = useState<string | null>(
-    sessionStorage.getItem("accessToken") || null
-  );
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   useEffect(() => {
-    const fetchToken = async () => {
-      if (!token && currentUser) {
-        try {
-          const userToken = await getIdToken(currentUser);
-          sessionStorage.setItem("accessToken", userToken);
-          setToken(userToken);
-        } catch (error) {
-          console.error("Error fetching user token:", error);
-        }
+    const fetchToken = () => {
+      if (!token && currentUser && currentUser.uid) {
+        console.log("Fetching user token...");
+        getIdToken(currentUser)
+          .then((userToken) => {
+            console.log("User token obtained:", userToken);
+            setToken(userToken);
+            sessionStorage.setItem("accessToken", userToken);
+          })
+          .catch((error) => {
+            console.error("Error fetching user token:", error);
+          });
       }
     };
 
     fetchToken();
-  }, [currentUser, token]); 
+  }, [currentUser]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -44,6 +46,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     return unsubscribe;
   }, []);
+
+  useGlobalAxiosInstance(sessionStorage.getItem("accessToken")!);
 
   const authContextValue: AuthContextType = {
     currentUser,
@@ -57,3 +61,4 @@ export function AuthProvider({ children }: AuthProviderProps) {
     </AuthContext.Provider>
   );
 }
+

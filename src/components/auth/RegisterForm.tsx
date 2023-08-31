@@ -54,14 +54,14 @@ export default function RegisterForm() {
   }, [currentUser, success]);
 
   return (
-    <div className="w-full xl:max-w-4xl m-auto">
+    <div className="w-full xl:max-w-4xl m-auto overflow-hidden">
       <ContinueWithGoogle
         continueWithGoogle={continueWithGoogle}
         disabled={isLoading}
       />
       <section className="bg-white !border-2 mt-4 border-gray-100 p-4 rounded-xl">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
               control={form.control}
               name="email"
@@ -94,7 +94,7 @@ export default function RegisterForm() {
             <div className="">
               <Link className="text-sm" to="/login">
                 Already have an account?{" "}
-                <span className="font-bold text-sm">Login Here</span>
+                <span className="underline  underline-offset-2 text-sm">Login Here</span>
               </Link>
             </div>
             <Button

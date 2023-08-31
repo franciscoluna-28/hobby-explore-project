@@ -10,12 +10,12 @@ const BottomNavbar = ({ uid }: { uid: string }) => {
         { path: "/home", icon: MdExplore, text: 'Discover' },
         { path: `/saved-activities/${uid}`, icon: BsBookmarksFill, text: 'Activities' },
         { path: "/create-activity", icon: ImPencil2, text: 'Create' },
-        { path: "/profile", icon: BiSolidUser, text: 'My Profile' },
+        { path: `/profile/${uid}`, icon: BiSolidUser, text: 'My Profile' },
         { path: "/faq", icon: BsQuestionLg, text: 'FAQ' },
     ];
 
     return (
-        <div className="fixed md:hidden bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+        <div className="fixed md:hidden bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-slate-300 dark:bg-gray-700 dark:border-gray-600">
             <ul className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium m-auto items-center">
                 {menuLinks.map((link, index) => (
                     <RenderLink

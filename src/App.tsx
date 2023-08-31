@@ -37,10 +37,10 @@ function App() {
               }
             ></Route>
             <Route
-              path="/profile"
+              path="/profile/:uid"
               element={
                 <PrivateRoute>
-                  <Profile />
+                  <Profile/>
                 </PrivateRoute>
               }
             ></Route>

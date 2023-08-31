@@ -4,7 +4,7 @@ export interface IPredefinedActivityCard {
   participants: number;
   price: number;
   accessibility: number;
-  id: string;
+  _id: string;
   imageId: string;
   blur_hash: string;
   urls: Urls;

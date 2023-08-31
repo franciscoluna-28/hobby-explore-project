@@ -8,7 +8,6 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
-import { deleteTokenFromSessionStorage } from "../lib/delete-token-from-session-storage";
 import { signInWithPopup } from "firebase/auth";
 import {
   createNewUser,
@@ -18,9 +17,10 @@ import { queryClient } from "../lib/query-client-instance";
 import { Navigate } from "react-router-dom";
 import { registerUserToken } from "../features/user-actions/api/use-send-user-token";
 import { useAuth } from "./useAuth";
+import { deleteTokenFromSessionStorage } from "../lib/delete-token-from-session-storage";
 
 export function useFirebase() {
-  const { setToken } = useAuth();
+  const { token, setToken } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
@@ -48,10 +48,8 @@ export function useFirebase() {
     await handleAuthAction(async () => {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       if (res.user) {
-        const userToken = await auth.currentUser?.getIdToken()!;
-        setToken(userToken); 
-        createNewUser(auth, userToken!);// Always set the token here to keep it up-to-date
-        await registerUserToken(res.user.uid, userToken!);
+        createNewUser(auth, token!);// Always set the token here to keep it up-to-date
+        await registerUserToken(res.user.uid, token!);
 
       }
     }, "Account created successfully!");
@@ -61,9 +59,7 @@ export function useFirebase() {
     await handleAuthAction(async () => {
       const res = await signInWithEmailAndPassword(auth, email, password);
       if (res.user) {
-        const userToken = await auth.currentUser?.getIdToken()!;
-        setToken(userToken); // Set the token here too
-        await registerUserToken(res.user.uid, userToken!);
+        await registerUserToken(res.user.uid, token!);
       }
     }, "Logged In Successfully!");
   }
@@ -75,16 +71,10 @@ export function useFirebase() {
       const provider = new GoogleAuthProvider();
       const res = await signInWithPopup(auth, provider);
       if (res.user) {
-        const userToken = await auth.currentUser?.getIdToken()!;
-        await registerUserToken(res.user.uid, userToken!);
-        createNewUserWithGoogle(auth, userToken!); // Removed unnecessary checks
-        setToken(userToken); // Also set the token here
+        await registerUserToken(res.user.uid, token!);
+        createNewUserWithGoogle(auth, token!); // Removed unnecessary checks
 
-        
-
-
-
-
+      
       }
     }, "Google Sign-In Successful!");
   }
@@ -99,6 +89,7 @@ export function useFirebase() {
   async function handleLogout() {
     try {
       await signOut(auth);
+      setToken(null);
       deleteTokenFromSessionStorage();
       queryClient.removeQueries();
       <Navigate to={"/"} />;

@@ -57,7 +57,7 @@ export default function ActivityPage() {
     <div className="flex flex-col m-auto">
       <img src={data.urls.regular} className="rounded-xl w-full m-auto"></img>
 
-    <Rating activityId={data.id}/>
+    <Rating activityId={data._id}/>
       <h1 className="text-accent font-bold text-3xl mt-4">{data.name}</h1>
       <span className="block text-sm my-2">Category:</span>
       <Badge className="w-min mt-2 p-2 bg-main/80 hover:bg-main text-mainDark">
@@ -126,16 +126,16 @@ export default function ActivityPage() {
       </p>
 
       {activities?.map((activity) => (
-  <li key={activity.id}>
+  <li key={activity._id}>
     {activity.name}
-    <Link to={`/activities/${activity.id}`}>Ver actividad</Link>
+    <Link to={`/activities/${activity._id}`}>Ver actividad</Link>
   </li>
 ))}
 
       <hr className="my-4"></hr>
       <h2 className="text-xl text-accent">Add a Comment</h2>
-      <CommentForm activityId={data.id}/>
-      <ActivityComments activityId={data.id} />
+      <CommentForm activityId={data._id}/>
+      <ActivityComments activityId={data._id} />
     </div>
   );
 }

@@ -99,7 +99,7 @@ function SavedActivities() {
           <h1 className="font-bold text-4xl">My Activities</h1>
           <div className="columns-1 sm:columns-2 w-full space-y-8 mt-8 lg:columns-3">
             {activities.map((activity: IPredefinedActivity) => (
-              <ActivityCard key={activity.id} {...activity} />
+              <ActivityCard key={activity._id} {...activity} />
             ))}
             <div ref={ref}></div>
           </div>

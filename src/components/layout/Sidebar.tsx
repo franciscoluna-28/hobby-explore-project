@@ -45,7 +45,7 @@ export default function Sidebar({ uid }: Props) {
         <h5 className="text-accent mt-3 font-bold text-normal">Me</h5>
         <ul className="py-2 flex flex-col gap-2">
           <RenderLink
-            path="/profile"
+            path={`profile/${uid}`}
             icon={BiSolidUser}
             text="My Profile"
             isMobile={false}

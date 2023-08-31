@@ -13,17 +13,17 @@ import RatingOnlyVisible from "../ratings/RatingOnlyVisible";
 
 
 export default function ActivityCard(props: IPredefinedActivityCard) {
-  const { name, type, urls, id, reviews, averageRating } = props;
+  const { name, type, urls, _id, reviews, averageRating } = props;
 
-  const { isSaved, saveActivity } = useActivityActions(props.id);
+  const { isSaved, saveActivity } = useActivityActions(props._id);
   const [isSaving, setIsSaving] = useState(false);
   
 
   const handleSaveActivity = async () => {
     setIsSaving(true);
-    console.log(id)
+    console.log(_id)
     try {
-      await saveActivity(props.id);
+      await saveActivity(props._id);
     } catch (error) {
       console.error("Error saving activity:", error);
     } finally {
@@ -34,7 +34,7 @@ export default function ActivityCard(props: IPredefinedActivityCard) {
   return (
     <article className="rounded-xl overflow-hidden relative w-full shadow-lg hover:shadow-xl duration-200 md:max-w-xs lg:max-w-md">
  <Link
-        to={`/activities/${id}`}
+        to={`/activities/${_id}`}
         className="w-min min-w-fit rounded-xl duration-200 underline underline-offset-2 text-sm flex items-center gap-2 group"
       >
         {/* Container for image and text */}

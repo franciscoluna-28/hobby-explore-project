@@ -39,17 +39,8 @@ export type IPredefinedActivityIDArray = {
   id: string;
 };
 
-export enum ActivityType {
-  Education = "education",
-  Recreational = "recreational",
-  Social = "social",
-  DIY = "diy",
-  Charity = "charity",
-  Cooking = "cooking",
-  Relaxation = "relaxation",
-  Music = "music",
-  Busywork = "busywork",
-}
+export type BoredAPIActivityType = "education" | "recreational" | "social" | "diy" | "charity" | "cooking" | "relaxation" | "music" | "busywork" | "all";
+
 
 export interface IPredefinedActivity extends IPredefinedActivityCard {
   description: string;

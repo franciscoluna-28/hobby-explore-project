@@ -39,7 +39,6 @@ function ActivityComment({
     setLocalText,
   } = useActivityCommentActions(currentUserUID, activityId);
 
-  console.log(localText);
 
   return (
     <article>

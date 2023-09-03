@@ -15,7 +15,12 @@ export async function registerUserToken(uid: string, token: string) {
     );
 
     return response.data;
-  } catch (error) {
-    throw new Error("Error registering user token");
+  } catch (error: any) {
+    if (error.response && error.response.status === 401) {
+      // El error 401 indica un token no válido o expirado
+      return { error: "TokenExpired" }; // Devuelve un valor específico para manejar en el componente de interfaz de usuario
+    } else {
+      throw error;
+    }
   }
 }

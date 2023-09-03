@@ -19,11 +19,14 @@ import { registerUserToken } from "../features/user-actions/api/use-send-user-to
 import { useAuth } from "./useAuth";
 import { deleteTokenFromSessionStorage } from "../lib/delete-token-from-session-storage";
 
+
 export function useFirebase() {
   const { token, setToken } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
+
+
 
   async function handleAuthAction(
     action: () => Promise<void>,
@@ -108,5 +111,6 @@ export function useFirebase() {
     handleLogout,
     continueWithGoogle,
     resetPassword,
+    setError,
   };
 }

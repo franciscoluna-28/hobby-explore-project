@@ -25,16 +25,12 @@ const FormSchema = z.object({
   description: z
     .string()
     .min(10, {
-      message: "Your description must be at least 10 characters.",
+      message: "Your comment must be at least 10 characters.",
     })
     .max(160, {
-      message: "Description must not be longer than 30 characters.",
+      message: "Comment must not be longer than 160 characters.",
     }),
 });
-
-// TODO add functionality
-// TODO divide schemas and types
-// TODO handle submit and mutations
 
 type Props = {
   activityId: string;

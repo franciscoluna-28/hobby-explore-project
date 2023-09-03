@@ -39,8 +39,17 @@ export type IPredefinedActivityIDArray = {
   id: string;
 };
 
-export type BoredAPIActivityType = "education" | "recreational" | "social" | "diy" | "charity" | "cooking" | "relaxation" | "music" | "busywork" | "all";
-
+export type BoredAPIActivityType =
+  | "education"
+  | "recreational"
+  | "social"
+  | "diy"
+  | "charity"
+  | "cooking"
+  | "relaxation"
+  | "music"
+  | "busywork"
+  | "all";
 
 export interface IPredefinedActivity extends IPredefinedActivityCard {
   description: string;

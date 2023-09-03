@@ -3,6 +3,7 @@ import { User, getIdToken } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import { useGlobalAxiosInstance } from "../features/axios";
+import useAuthLogout from "../hooks/useHandleLogout";
 
 interface AuthContextType {
   currentUser: User | null;
@@ -18,6 +19,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [token, setToken] = useState<string | null>(null);
+  const { handleLogout } = useAuthLogout();
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   useEffect(() => {
@@ -30,7 +32,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setToken(userToken);
             sessionStorage.setItem("accessToken", userToken);
           })
-          .catch((error) => {
+          .catch(async (error) => {
+            if (error.code === "auth/id-token-expired") {
+              await handleLogout();
+            }
             console.error("Error fetching user token:", error);
           });
       }
@@ -42,12 +47,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      setToken(null);
     });
 
     return unsubscribe;
   }, []);
 
-  useGlobalAxiosInstance(sessionStorage.getItem("accessToken")!);
+  useGlobalAxiosInstance(sessionStorage.getItem("accessToken")!, handleLogout);
 
   const authContextValue: AuthContextType = {
     currentUser,
@@ -61,4 +67,3 @@ export function AuthProvider({ children }: AuthProviderProps) {
     </AuthContext.Provider>
   );
 }
-

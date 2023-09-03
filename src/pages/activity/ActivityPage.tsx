@@ -12,55 +12,77 @@ import { BsPeople } from "react-icons/bs";
 import { BsUniversalAccessCircle } from "react-icons/bs";
 import CommentForm from "../../components/comments/CommentForm";
 import ActivityComments from "../../components/activities/ActivityComments";
-import Rating from "../../components/ratings/Rating"
+import Rating from "../../components/ratings/Rating";
 import { useRecommendedDefaultActivitiesByCategoryFromDB } from "../../features/default-activities/api/use-get-random-default-activities";
 import { Link } from "react-router-dom";
 import { Skeleton } from "../../components/ui/skeleton";
+import useRatingStore from "../../store/review-store";
+
 
 type Props = {
   id: string;
 };
 
-
-
+// TODO: Add UI updates in real time here
 export default function ActivityPage() {
-
   const { id } = useParams<Props>();
-
+  const { reviewsCount, averageRating } = useRatingStore((state) => state);
   const { data, isLoading, status } = useGetDefaultActivityDetails(id ?? "");
-  const { data: activities} = useRecommendedDefaultActivitiesByCategoryFromDB(data?.type!)
+  const { data: activities } = useRecommendedDefaultActivitiesByCategoryFromDB(
+    data?.type!
+  );
 
   console.log(data)
 
+
   if (isLoading) {
-    return(
+    return (
       <div className="m-auto">
-        <Skeleton className="w-[1000px] h-[600px]"/>
-        <Skeleton className="w-96 mt-4 h-8"/>
-        <Skeleton className="w-[600px] mt-4 h-8"/>
-        <Skeleton className="w-16 mt-4 h-8"/>
+        <Skeleton className="w-[1000px] h-[600px]" />
+        <Skeleton className="w-96 mt-4 h-8" />
+        <Skeleton className="w-[600px] mt-4 h-8" />
+        <Skeleton className="w-16 mt-4 h-8" />
         <div className="mt-4 flex gap-4">
-          <Skeleton className="w-48 h-32"/>
-          <Skeleton className="w-48 h-32"/>
-          <Skeleton className="w-48 h-32"/>
-          </div>
-          <Skeleton className="w-[1000px] mt-4 h-32"/>
+          <Skeleton className="w-48 h-32" />
+          <Skeleton className="w-48 h-32" />
+          <Skeleton className="w-48 h-32" />
+        </div>
+        <Skeleton className="w-[1000px] mt-4 h-32" />
       </div>
-    )
+    );
   }
 
   if (status === "error" || !data) {
     return <p>Error!</p>;
   }
 
+// Access the ratings store data
+
+
+
+  // TODO: Refresh the reviews and the average rating in real time
+
   return (
     <div className="flex flex-col m-auto">
       <img src={data.urls.regular} className="rounded-xl w-full m-auto"></img>
+      <div>
+        <Rating activityId={data._id} />
 
-    <Rating activityId={data._id}/>
+        <p className="text-slate-500 text-sm mt-2">
+          {data.reviews === null
+            ? "This activity doesn't have ratings yet"
+            : `${reviewsCount} Reviews`}
+        </p>
+        <p className="text-slate-500 text-sm mt-2">
+          {data.averageRating === null
+            ? "No Average Rating"
+            : `Average Rating: ${averageRating}`}
+        </p>
+      </div>
+
       <h1 className="text-accent font-bold text-3xl mt-4">{data.name}</h1>
       <span className="block text-sm my-2">Category:</span>
-      <Badge className="w-min mt-2 p-2 bg-main/80 hover:bg-main text-mainDark">
+      <Badge className="w-min mt-2 rounded-xl p-2 bg-main/80 hover:bg-main text-mainDark">
         <span className="first-letter:capitalize">{data.type}</span>
       </Badge>
       <h2 className="text-accent text-xl mt-4 font-bold">Details</h2>
@@ -126,15 +148,15 @@ export default function ActivityPage() {
       </p>
 
       {activities?.map((activity) => (
-  <li key={activity._id}>
-    {activity.name}
-    <Link to={`/activities/${activity._id}`}>Ver actividad</Link>
-  </li>
-))}
+        <li key={activity._id}>
+          {activity.name}
+          <Link to={`/activities/${activity._id}`}>Ver actividad</Link>
+        </li>
+      ))}
 
       <hr className="my-4"></hr>
       <h2 className="text-xl text-accent">Add a Comment</h2>
-      <CommentForm activityId={data._id}/>
+      <CommentForm activityId={data._id} />
       <ActivityComments activityId={data._id} />
     </div>
   );

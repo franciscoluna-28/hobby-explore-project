@@ -4,16 +4,13 @@ import { Input } from "../../components/ui/input";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
 import { Textarea } from "../../components/ui/textarea";
 import ImagePlaceholder from "../../assets/imagePlaceholder.png";
 /* import { AspectRatio } from "../../components/ui/aspect-ratio"; */
-import { AiOutlineInfoCircle } from "react-icons/ai";
 import { Button } from "../../components/ui/button";
 import z from "zod";
 import {
@@ -86,7 +83,6 @@ export default function CreateActivity() {
 
   /*   const [activityName, setActivityName] = useState("");
   const [imageUrl, setImageUrl] = useState(""); */
-  const [description, setDescription] = useState("");
   /*   const [fruit, setFruit] = useState("");
   const [participants, setParticipants] = useState("");
   const [accessibility, setAccessibility] = useState("");

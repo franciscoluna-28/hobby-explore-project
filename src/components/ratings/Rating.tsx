@@ -1,44 +1,10 @@
-import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { useAuth } from "../../hooks/useAuth";
-import { useGetCurrentUserRating, useRateActivity } from "../../features/ratings/use-get-current-rating";
-import { queryClient } from "../../lib/query-client-instance";
+import useRatingStore from "../../store/review-store";
+import { useRating } from "../../hooks/useRating";
 
 const Rate = ({ activityId }: { activityId: string }) => {
-  const [rate, setRate] = useState<number | null>(null);
-  const { currentUser } = useAuth();
-  const rateActivityMutation = useRateActivity();
-  const currentUserRatingQuery = useGetCurrentUserRating({
-    uid: currentUser?.uid!,
-    activityId,
-  });
-
-  const handleRateActivity = async (rating: number) => {
-    try {
-      const response = await rateActivityMutation.mutateAsync({
-        uid: currentUser?.uid || "",
-        activityId,
-        rating,
-      });
-      if (response) {
-        setRate(rating);
-        queryClient.invalidateQueries(["currentRating", currentUser?.uid!, activityId]);
-      }
-    } catch (error) {
-      console.error("Error while rating activity:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (
-      currentUserRatingQuery.isSuccess &&
-      currentUserRatingQuery.data !== null
-    ) {
-      setRate(currentUserRatingQuery.data);
-    } else {
-      setRate(null);
-    }
-  }, [currentUserRatingQuery.isSuccess, currentUserRatingQuery.data]);
+  const { rate, handleRateActivity } = useRating({ activityId });
+  const addRatingAndReview = useRatingStore((state) => state.incrementReviewCount); // Access the addRatingAndReview action from the store
 
   return (
     <div className="flex mt-8">
@@ -54,6 +20,7 @@ const Rate = ({ activityId }: { activityId: string }) => {
             value={givenRating}
             onClick={() => {
               handleRateActivity(givenRating);
+              addRatingAndReview(); // Update the rating using the store action
             }}
           />
           <FaStar

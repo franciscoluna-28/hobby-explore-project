@@ -18,6 +18,7 @@ import ActivityPage from "./pages/activity/ActivityPage";
 import FAQ from "./pages/FAQ";
 import SavedActivities from "./pages/user/SavedActivities";
 import CreateActivity from "./pages/activity/CreateActivityPage";
+import { AuthProvider } from "./context/userAuthContext";
 
 function App() {
   const router = createBrowserRouter(
@@ -85,9 +86,11 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
+      <AuthProvider>
         <SidebarProvider>
           <RouterProvider router={router}></RouterProvider>
         </SidebarProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </>
   );

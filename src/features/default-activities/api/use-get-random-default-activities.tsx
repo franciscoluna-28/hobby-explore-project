@@ -1,17 +1,17 @@
 import { useQuery } from "@tanstack/react-query"; // Asegúrate de importar useQuery desde la biblioteca correcta
 import { axios } from "../../axios";
-import { IPredefinedActivityCard } from "../../../types/default-activities";
+import { IPredefinedActivity } from "../../../types/default-activities";
 
 // API common endpoint
 // This is temporary and just to test the cards
 const QUERY_KEY = "activity/random";
 
 // Gets 3 random activities from the Hobby Explore API
-async function getRecommendedDefaultActivities(): Promise<IPredefinedActivityCard[]> {
+async function getRecommendedDefaultActivities(): Promise<IPredefinedActivity[]> {
   const { data } = await axios.get(`/${QUERY_KEY}`);
   return data;
 }
-async function getRecommendedDefaultActivitiesFromDB(type: string): Promise<IPredefinedActivityCard[]> {
+async function getRecommendedDefaultActivitiesFromDB(type: string): Promise<IPredefinedActivity[]> {
   const { data } = await axios.get(`activity/three-activities-from-db-with-type?type=${type}`);
   return data;
 }
@@ -36,7 +36,7 @@ export function useRecommendedDefaultActivitiesByCategoryFromDB(category: string
 }
 
 async function getRecommendedDefaultActivitiesByCategory(category: string) {
-  const { data } = await axios.get(`/${QUERY_KEY}/${category}`);
+  const { data } = await axios.get(`/${QUERY_KEY}?type=${category}`);
   return data;
 }
 

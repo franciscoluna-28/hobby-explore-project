@@ -1,5 +1,5 @@
 import { IPredefinedActivityCard } from "../../types/default-activities";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "../ui/badge";
 import { useActivityActions } from "../../hooks/useActivityActions";
 import { Button } from "../ui/button";
@@ -9,19 +9,27 @@ import SaveActivityButton from "./SaveActivityButton";
 import { Link } from "react-router-dom";
 import ActivityHoverCard from "./ActivityHoverCard";
 import RatingOnlyVisible from "../ratings/RatingOnlyVisible";
-
-
+import { Blurhash } from "react-blurhash";
 
 export default function ActivityCard(props: IPredefinedActivityCard) {
   const { name, type, urls, _id, reviews, averageRating } = props;
 
   const { isSaved, saveActivity } = useActivityActions(props._id);
-  const [isSaving, setIsSaving] = useState(false);
-  
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false);
+
+  // Lazy load to avoid layout shifting problems
+  useEffect(() => {
+    const image = new Image();
+    image.onload = () => {
+      setIsImageLoaded(true);
+    };
+    image.src = urls.regular;
+  }, [urls.regular]);
 
   const handleSaveActivity = async () => {
     setIsSaving(true);
-    console.log(_id)
+    console.log(_id);
     try {
       await saveActivity(props._id);
     } catch (error) {
@@ -33,19 +41,31 @@ export default function ActivityCard(props: IPredefinedActivityCard) {
 
   return (
     <article className="rounded-xl overflow-hidden relative w-full shadow-lg hover:shadow-xl duration-200 md:max-w-xs lg:max-w-md">
- <Link
+      <Link
         to={`/activities/${_id}`}
-        className="w-min min-w-fit rounded-xl duration-200 underline underline-offset-2 text-sm flex items-center gap-2 group"
+        className="w-full h-full rounded-xl duration-200 underline text-sm flex items-center group"
       >
         {/* Container for image and text */}
-        <div className="relative">
+        <div className="relative w-full !h-full !overflow-hidden">
           {/* Darkened image */}
-          <img
-            className="overflow-hidden rounded-t-xl shadow-xl duration-200 z-20 group-hover:brightness-90"
-            loading="lazy"
-            src={urls.regular}
-            alt="Activity"
-          />
+          {isImageLoaded ? (
+            <img
+              className="overflow-hidden rounded-t-xl duration-200 z-20 group-hover:brightness-90"
+              loading="lazy"
+              src={urls.regular}
+              alt="Activity"
+            />
+          ) : (
+            <div className="!h-52">
+              <Blurhash
+                height={"100%"}
+                resolutionX={32}
+                resolutionY={32}
+                className="!overflow-hidden !w-full !h-48 !min-h-full !p-0 rounded-t-xl duration-200 !z-20 group-hover:brightness-90"
+                hash={props.blur_hash}
+              />
+            </div>
+          )}
           {/* Hover text */}
           <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white bg-black bg-opacity-60 rounded-lg py-1 px-2 text-xs opacity-0 group-hover:opacity-100 duration-200">
             Learn more
@@ -67,7 +87,10 @@ export default function ActivityCard(props: IPredefinedActivityCard) {
             <div className="flex items-center gap-2">
               <span className="block text-accent"></span>
             </div>
-            <RatingOnlyVisible averageRating={averageRating} totalRatings={reviews}/>
+            <RatingOnlyVisible
+              averageRating={averageRating}
+              totalRatings={reviews}
+            />
             <h5 className="text-start text-accent text-sm my-2 font-normal">
               Category:
             </h5>
@@ -78,8 +101,7 @@ export default function ActivityCard(props: IPredefinedActivityCard) {
           </div>
         </div>
 
-        <div className="flex gap-2 mt-4">
-        </div>
+        <div className="flex gap-2 mt-4"></div>
         <div className=""></div>
 
         <ActivityHoverCard activity={props}>

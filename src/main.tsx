@@ -6,9 +6,9 @@ import { AuthProvider } from './context/userAuthContext.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AuthProvider>
+
     <App />
-    </AuthProvider>
+
   </React.StrictMode>
   
 )

@@ -12,23 +12,23 @@ import {
 } from "../../components/ui/select";
 import { Textarea } from "../../components/ui/textarea";
 import ImagePlaceholder from "../../assets/imagePlaceholder.png";
-import { AspectRatio } from "../../components/ui/aspect-ratio";
+/* import { AspectRatio } from "../../components/ui/aspect-ratio"; */
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { Button } from "../../components/ui/button";
 
 export default function CreateActivity() {
-  const [activityName, setActivityName] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+/*   const [activityName, setActivityName] = useState("");
+  const [imageUrl, setImageUrl] = useState(""); */
   const [description, setDescription] = useState("");
-  const [fruit, setFruit] = useState("");
+/*   const [fruit, setFruit] = useState("");
   const [participants, setParticipants] = useState("");
   const [accessibility, setAccessibility] = useState("");
   const [cost, setCost] = useState("");
-
-  const handleImageUrlChange = (e) => {
+ */
+/*   const handleImageUrlChange = (e) => {
     setImageUrl(e.target.value);
   };
-
+ */
   return (
     <div className="max-w-4xl w-full m-auto">
       <div className="gap-2 flex items-center w-full m-auto">

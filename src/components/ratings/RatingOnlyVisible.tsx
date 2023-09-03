@@ -25,7 +25,7 @@ const RatingOnlyVisible = ({
         );
       })}
       {totalRatings === 0 ? (
-        <p className="ml-2 text-sm text-gray-600">There are no ratings yet</p>
+        <p className="ml-2 text-sm text-gray-600">No ratings yet</p>
       ) : (
         <p className="ml-2 text-sm text-gray-600">
           {averageRating.toFixed(1)} ({totalRatings} {totalRatings === 1 ? "rating" : "ratings"})

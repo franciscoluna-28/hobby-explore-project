@@ -1,19 +1,15 @@
-import React, { useState } from "react";
 import { Button } from "../ui/button";
-import { BiPencil, BiSolidTrashAlt } from "react-icons/bi";
-import { useRemoveCommentFromActivity } from "../../features/comments/api/use-activity-comments";
-import { queryClient } from "../../lib/query-client-instance";
 import { Comment } from "../../types/comments";
 import { Avatar } from "../ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import withEditMode from "../HOC/WithEditMode";
-import { useEditComment } from "../../features/comments/api/use-activity-comments";
 import { Textarea } from "../ui/textarea";
 import { getTimeAgo } from "../../lib/getTimeAgo";
 import { BsThreeDots } from "react-icons/bs";
 import { auth } from "../../firebase";
+import { useActivityCommentActions } from "../../hooks/useCommentsActions";
+import CommentOptionsMenu from "./CommentOptionsMenu";
 
-// TODO: REFACTOR THE LOGIC INTO A HOOK AND CREATE AN ISOLATED FORM CARD HERE
 interface Props extends Comment {
   currentUserUID: string;
   isEditMode: boolean; // Agregamos la prop isEditMode
@@ -23,59 +19,27 @@ interface Props extends Comment {
 function ActivityComment({
   userUid: userCommentUID,
   currentUserUID,
-  text,
   _id,
   userName,
   activityId,
   userPfp,
   createdAt,
   isContentModified,
-  isEditMode, // Agregamos la prop isEditMode
-  toggleEditMode, // Agregamos la prop toggleEditMode
+  text,
 }: Props) {
-  const deleteCommentMutation = useRemoveCommentFromActivity();
-  const editCommentMutation = useEditComment();
+  const {
+    isDialogOpen,
+    localText,
+    isEditMode,
+    handleDialog,
+    handleDeleteComment,
+    handleEditComment,
+    handleCancelEdit,
+    toggleEditMode,
+    setLocalText,
+  } = useActivityCommentActions(currentUserUID, activityId);
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [localText, setLocalText] = React.useState(text); // Estado local para la edición
-
-  const handleDialog = () => {
-    setIsDialogOpen((isDialogOpen) => !isDialogOpen);
-  };
-
-  const handleDeleteComment = async (commentId: string, uid: string) => {
-    try {
-      await deleteCommentMutation.mutateAsync({ uid, commentId });
-      queryClient.invalidateQueries(["commentsFromActivity", activityId]);
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-    }
-  };
-
-  const handleEditComment = async (
-    commentId: string,
-    newCommentText: string
-  ) => {
-    try {
-      console.log(newCommentText);
-
-      await editCommentMutation.mutateAsync({
-        uid: currentUserUID,
-        commentId,
-        newCommentText,
-      });
-
-      toggleEditMode(); // Salir del modo de edición
-      queryClient.invalidateQueries(["commentsFromActivity", activityId]);
-    } catch (error) {
-      console.error("Error editing comment:", error);
-    }
-  };
-
-  const handleCancelEdit = () => {
-    setLocalText(text); // Regresar al texto original
-    toggleEditMode(); // Salir del modo de edición
-  };
+  console.log(localText);
 
   return (
     <article>
@@ -96,22 +60,10 @@ function ActivityComment({
               >
                 <BsThreeDots />
                 {isDialogOpen && (
-                  <div className="bg-white absolute top-full border border-gray-300 right-0  mt-1 p-2 rounded-md shadow-md">
-                    <Button
-                      onClick={() => handleDeleteComment(_id, currentUserUID)}
-                      className="flex bg-transparent text-red-500 w-full text-left hover:bg-transparent"
-                    >
-                      <BiSolidTrashAlt className="mr-2" />
-                      Delete
-                    </Button>
-                    <Button
-                      onClick={toggleEditMode}
-                      className="bg-transparent text-accent w-full text-left flex hover:bg-slate-200"
-                    >
-                      <BiPencil className="mr-2 text-accent" />
-                      Edit
-                    </Button>
-                  </div>
+                  <CommentOptionsMenu
+                    onDeleteComment={() => handleDeleteComment(_id)}
+                    onEditComment={toggleEditMode}
+                  ></CommentOptionsMenu>
                 )}
               </button>
             ) : null}
@@ -122,6 +74,7 @@ function ActivityComment({
           {isEditMode ? (
             <>
               <Textarea
+                className="mt-2"
                 value={localText}
                 onChange={(e) => setLocalText(e.target.value)}
               />
@@ -138,27 +91,13 @@ function ActivityComment({
               </div>
             </>
           ) : (
-            <p className="flex ">
-              {localText}{" "}
+            <p className="flex">
+              {text}
               <span className="block text-slate-500 ml-1 text-sm m-auto">
                 {isContentModified ? "(Edited)" : null}
               </span>
             </p>
           )}
-          {currentUserUID === userCommentUID ? (
-            <>
-              {/*  <Button
-                  onClick={() => handleDeleteComment(_id, currentUserUID)}
-                  className=" text-slate-500 duration-200 bg-slate-200 rounded-full hover:bg-slate-200"
-                >Delete
-                </Button>
-                <Button
-                  className="bg-white duration-200 rounded-full"
-                  onClick={toggleEditMode}
-                >
-                </Button> */}
-            </>
-          ) : null}
         </div>
       </div>
     </article>

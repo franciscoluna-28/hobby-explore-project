@@ -34,11 +34,7 @@ export function useActivityActions(id: string) {
     }
   };
 
-  // TODO: Use a store to remove this dependency and do less API requests
-  // TODO: What am I even doing?
-  // TODO: I think I should stat selling minecraft mods instead of doing web applications
-  // TODO: Quit this fullstack thing (But wait I have to buy a Porsche with it lol)
-  // With this we can create updates in real time instead of hardcoding the useEffect LOL
+
   useEffect(() => {
     setIsSaved(data?.valueOf()); // Update the saved state on data change
   }, [data]);

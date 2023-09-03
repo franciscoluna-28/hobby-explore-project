@@ -7,7 +7,7 @@ import { Badge } from "../ui/badge";
 
 
 const linkVariants = cva(
-  "group duration-200 w-auto md:w-full rounded-xl h-min text-normal relative hover:bg-slate-200 hover:text-accent rounded-normal flex gap-2 items-center p-2 sm:p-4",
+  "group duration-200 w-min md:w-auto m-auto md:w-full rounded-xl h-min text-normal relative hover:bg-slate-200 hover:text-accent rounded-normal flex gap-2 items-center p-2 sm:p-4",
   {
     variants: {
       isActive: {

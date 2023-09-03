@@ -11,7 +11,7 @@ export const axios = Axios.create({
 });
 
 // Creating global axios instance
-export function useGlobalAxiosInstance(token: string) {
+export function useGlobalAxiosInstance(token: string, onTokenExpired: () => void) {
   useEffect(() => {
     function authRequestInterceptor(config: AxiosRequestConfig) {
       console.log("token used for requests is " + token);
@@ -22,13 +22,26 @@ export function useGlobalAxiosInstance(token: string) {
       return config;
     }
 
+    const responseInterceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response && error.response.status === 401) {
+          // Handle token expiration here
+          console.log("Token expired. Logging out...");
+          onTokenExpired();
+        }
+        return Promise.reject(error);
+      }
+    );
+
     const requestInterceptor = axios.interceptors.request.use(
       authRequestInterceptor
     );
 
     return () => {
-      // Clean up by ejecting the interceptor when the component unmounts
+      // Clean up by ejecting the interceptors when the component unmounts
       axios.interceptors.request.eject(requestInterceptor);
+      axios.interceptors.response.eject(responseInterceptor);
     };
-  }, [token]); // Run this effect only once, when the component mounts
+  }, [token, onTokenExpired]); // Run this effect when token or onTokenExpired changes
 }

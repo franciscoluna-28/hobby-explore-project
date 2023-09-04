@@ -24,6 +24,9 @@ import {
 } from "../../components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAddCustomActivity } from "../../features/custom-activities/api/use-create-custom-activity";
+import { useAuth } from "../../hooks/useAuth";
+import { BoredAPIActivityType } from "../../types/default-activities";
 
 export default function CreateActivity() {
   const formSchema = z.object({
@@ -54,7 +57,10 @@ export default function CreateActivity() {
       .max(100, {
         message: "A maximum of 100 participants is allowed.",
       }),
-    accessibility: z.coerce
+    accessibility: z.coerce.number().min(0, {
+      message: "Choose a valid option!",
+    }),
+    cost: z.coerce
       .number()
       .min(0, {
         message: "Choose a valid option!",
@@ -65,7 +71,6 @@ export default function CreateActivity() {
     }),
   });
 
-  const [imageUrl, setImageUrl] = useState<string>(ImagePlaceholder);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -74,24 +79,28 @@ export default function CreateActivity() {
       name: "",
     },
   });
+  
+
+  const addCustomActivityMutation = useAddCustomActivity();
+  const { currentUser } = useAuth();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
+    // Create a custom activity object based on form values
+    const customActivityData = {
+      userUID: currentUser?.uid!, // Use empty string as fallback
+      userPictureURL: currentUser?.photoURL || "", // Use empty string as fallback
+      name: values.name,
+      imageURL: values.url,
+      type: values.category as BoredAPIActivityType,
+      price: values.cost, // Parse the cost to a number
+      participants: values.participants, // Parse participants to a number
+      description: values.description,
+      accessibility: values.accessibility, // Parse accessibility to a number
+    };
 
-  /*   const [activityName, setActivityName] = useState("");
-  const [imageUrl, setImageUrl] = useState(""); */
-  /*   const [fruit, setFruit] = useState("");
-  const [participants, setParticipants] = useState("");
-  const [accessibility, setAccessibility] = useState("");
-  const [cost, setCost] = useState("");
- */
-  /*   const handleImageUrlChange = (e) => {
-    setImageUrl(e.target.value);
-  };
- */
+    // Call the mutation to add the custom activity
+    addCustomActivityMutation.mutate(customActivityData);
+  }
 
   return (
     <section className="w-full">
@@ -122,11 +131,14 @@ export default function CreateActivity() {
                   <Input
                     placeholder="https://images.unsplash.com/photo-1682685796766-0fddd3e480de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
                     {...field}
-                    onChange={(e) => setImageUrl(e.target.value)}
                   />
                 </FormControl>
                 <FormDescription>A valid Image URL.</FormDescription>
                 <FormMessage />
+                <div className="">
+            <Label className="">Image Preview</Label>
+            <img className="h-72 mt-4 rounded-xl" src={field.value || ImagePlaceholder}></img>
+          </div>
               </FormItem>
             )}
           />
@@ -137,7 +149,7 @@ export default function CreateActivity() {
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea 
+                  <Textarea
                     className="h-fit overflow-hidden"
                     placeholder="Explain us what your activity is about! We love to hear your thoughts."
                     {...field}
@@ -152,10 +164,7 @@ export default function CreateActivity() {
             )}
           />
 
-          <div className="">
-            <Label className="">Image Preview</Label>
-            <img className="h-72 mt-4 rounded-xl" src={imageUrl}></img>
-          </div>
+          
           <FormField
             control={form.control}
             name="participants"
@@ -179,15 +188,15 @@ export default function CreateActivity() {
           />
           <FormField
             control={form.control}
-            name="accessibility"
+            name="cost"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Accessibility</FormLabel>{" "}
+                <FormLabel>Cost</FormLabel>{" "}
                 {/* Corregir la etiqueta */}
                 <Select onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="How accessible is your activity?" />
+                      <SelectValue placeholder="How expensive is your activity?" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -205,6 +214,40 @@ export default function CreateActivity() {
                   </SelectContent>
                 </Select>
                 <FormDescription>
+Select the cost of your activity.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="accessibility"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Accessibility</FormLabel>{" "}
+                {/* Corregir la etiqueta */}
+                <Select onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="How accessible is your activity?" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="0">Not accesible</SelectItem>
+                    <SelectItem value="0.25">Not so accesible</SelectItem>
+                    <SelectItem value="0.50">
+                    Kind of accesible
+                    </SelectItem>
+                    <SelectItem value="0.75">
+                      Really Accesible
+                    </SelectItem>
+                    <SelectItem value="1.00">
+Everyone can do it
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormDescription>
                   Select the accessibility of your activity.
                 </FormDescription>
                 <FormMessage />
@@ -217,7 +260,7 @@ export default function CreateActivity() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Category</FormLabel> {/* Cambiar la etiqueta */}
-                <Select {...field}>
+                <Select {...field} onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue
@@ -246,119 +289,11 @@ export default function CreateActivity() {
             )}
           />
 
-          <Button type="submit">Submit</Button>
+          <Button disabled={addCustomActivityMutation.isSuccess} type="submit">Submit</Button>
+          {addCustomActivityMutation.isSuccess ? <span className="text-green-500 block">
+            Activity Submited Successfully!</span> : null}
         </form>
       </Form>
     </section>
-
-    /*     <div className="max-w-4xl w-full m-auto">
-      <div className="gap-2 flex items-center w-full m-auto">
-        <h1 className="text-4xl font-bold">Create Activity</h1>
-      </div>
-
-      <section className="flex flex-col space-y-4 mt-4 w-full">
-        <div className="flex gap-2 items-center">
-          <AiOutlineInfoCircle className="order-2" />
-          <Label htmlFor="name">Name</Label>
-        </div>
-        <Input type="name" placeholder="The name of your activity" />
-
-        <div className="flex gap-2 items-center">
-          <AiOutlineInfoCircle className="order-2" />
-          <Label htmlFor="name">Image URL</Label>
-        </div>
-        <Input type="name" placeholder="The URL of your image" />
-        <div className="">
-          <Label htmlFor="name">Preview your image here</Label>
-          <img className="w-96 mt-4 rounded-xl" src={ImagePlaceholder} />
-        </div>
-
-        <div className="flex gap-2 items-center">
-          <AiOutlineInfoCircle className="order-2" />
-          <Label htmlFor="name">Description</Label>
-        </div>
-        <Textarea
-          id="description"
-          placeholder="The description of your activity. You can provide details about it and tell other users how it works."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <div className="flex gap-2 items-center">
-          <Label htmlFor="participants">Participants</Label>
-          <AiOutlineInfoCircle className="order-2" />
-        </div>
-        <Input
-          type="participants"
-          className="w-[200px]"
-          placeholder="Number of participants"
-        />
-
-        <section className="flex gap-4">
-          <div>
-            <Label htmlFor="name">Category</Label>
-            <AiOutlineInfoCircle className="order-2 inline ml-2" />
-            <Select>
-              <SelectTrigger className="w-[180px] mt-2">
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Fruits</SelectLabel>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                  <SelectItem value="blueberry">Blueberry</SelectItem>
-                  <SelectItem value="grapes">Grapes</SelectItem>
-                  <SelectItem value="pineapple">Pineapple</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label htmlFor="name">Accesibility</Label>
-            <AiOutlineInfoCircle className="order-2 inline ml-2" />
-            <Select>
-              <SelectTrigger className="w-[180px] mt-2">
-                <SelectValue placeholder="Select accesibility" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Fruits</SelectLabel>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                  <SelectItem value="blueberry">Blueberry</SelectItem>
-                  <SelectItem value="grapes">Grapes</SelectItem>
-                  <SelectItem value="pineapple">Pineapple</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label htmlFor="name">Cost</Label>
-            <AiOutlineInfoCircle className="order-2 inline ml-2" />
-            <Select>
-              <SelectTrigger className="w-[180px] mt-2">
-                <SelectValue placeholder="Select the cost" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Fruits</SelectLabel>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                  <SelectItem value="blueberry">Blueberry</SelectItem>
-                  <SelectItem value="grapes">Grapes</SelectItem>
-                  <SelectItem value="pineapple">Pineapple</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-        </section>
-        <div className="mt-2">
-        <Button className="bg-accent w-min mt-4">Submit</Button>
-        </div>
-      </section>
-    </div> */
   );
 }

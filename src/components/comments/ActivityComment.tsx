@@ -12,8 +12,8 @@ import CommentOptionsMenu from "./CommentOptionsMenu";
 
 interface Props extends Comment {
   currentUserUID: string;
-  isEditMode: boolean; // Agregamos la prop isEditMode
-  toggleEditMode: () => void; // Agregamos la prop toggleEditMode
+  isEditMode: boolean; 
+  toggleEditMode: () => void; 
 }
 
 function ActivityComment({

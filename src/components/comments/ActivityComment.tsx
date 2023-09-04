@@ -39,7 +39,6 @@ function ActivityComment({
     setLocalText,
   } = useActivityCommentActions(currentUserUID, activityId);
 
-
   return (
     <article>
       <div className="flex gap-4">

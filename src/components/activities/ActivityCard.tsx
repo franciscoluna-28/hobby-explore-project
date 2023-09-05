@@ -1,4 +1,6 @@
-import { IPredefinedActivityCard } from "../../types/default-activities";
+import {
+  IPredefinedActivity,
+} from "../../types/default-activities";
 import { useEffect, useState } from "react";
 import { Badge } from "../ui/badge";
 import { useActivityActions } from "../../hooks/useActivityActions";
@@ -11,7 +13,7 @@ import ActivityHoverCard from "./ActivityHoverCard";
 import RatingOnlyVisible from "../ratings/RatingOnlyVisible";
 import { Blurhash } from "react-blurhash";
 
-export default function ActivityCard(props: IPredefinedActivityCard) {
+export default function ActivityCard(props: IPredefinedActivity) {
   const { name, type, urls, _id, reviews, averageRating } = props;
 
   const { isSaved, saveActivity } = useActivityActions(props._id);
@@ -31,7 +33,7 @@ export default function ActivityCard(props: IPredefinedActivityCard) {
     setIsSaving(true);
     console.log(_id);
     try {
-      await saveActivity(props._id);
+      await saveActivity(props);
     } catch (error) {
       console.error("Error saving activity:", error);
     } finally {

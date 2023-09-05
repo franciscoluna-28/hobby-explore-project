@@ -8,19 +8,23 @@ import { IPredefinedActivity } from "../../types/default-activities";
 import RecommendedActivitiesSkeleton from "../../components/skeleton/recommended-activities-skeleton";
 import ErrorScreen from "../../components/errors/error-screen";
 import { Button } from "../../components/ui/button";
+import useActivitiesStore from "../../store/random-activities-store";
 
 function SavedActivities() {
   // UID obtained through the params to get the user activities data
   const { uid } = useParams();
 
-  // Getting the saved activities from a user
+  // Get the total default activities from the store
+  const totalDefaultActivities = useActivitiesStore((state) => state.totalDefaultActivities);
+  const recommendedActivities = useActivitiesStore((state) => state.totalDefaultActivities);
+
+  // Function to fetch saved activities from the server
   const fetchSavedActivities = (page: number) =>
-    axios
-      .get(`/activity/user-activities/${uid}?page=${page}`)
-      .then((res) => res.data);
+    axios.get(`/activity/user-activities/${uid}?page=${page}`).then((res) => res.data);
 
   const {
     data,
+    isSuccess,
     isLoading,
     isError,
     fetchNextPage,
@@ -62,6 +66,14 @@ function SavedActivities() {
   // Access the correct data structure
   const activities = data?.pages.flatMap((page) => page.docs) || [];
 
+  if (isSuccess && activities.length > 0) {
+    // Concatenate the newly fetched activities with the ones from the store
+    const mergedActivities = [...totalDefaultActivities, ...activities];
+
+    // Set the merged activities in the store
+    useActivitiesStore.setState({ totalDefaultActivities: mergedActivities });
+  }
+
   if (activities.length === 0) {
     return (
       <ErrorScreen
@@ -98,7 +110,7 @@ function SavedActivities() {
         <>
           <h1 className="font-bold text-4xl">My Activities</h1>
           <div className="columns-1 sm:columns-2 w-full space-y-8 mt-8 lg:columns-3">
-            {activities.map((activity: IPredefinedActivity) => (
+            {mergedActivities.map((activity: IPredefinedActivity) => (
               <ActivityCard key={activity._id} {...activity} />
             ))}
             <div ref={ref}></div>

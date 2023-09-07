@@ -1,7 +1,5 @@
-import { useRef, useEffect } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useIntersection } from "@mantine/hooks";
 import { axios } from "../../features/axios";
 import ActivityCard from "../../components/activities/ActivityCard";
 import { IPredefinedActivity } from "../../types/default-activities";
@@ -9,70 +7,56 @@ import RecommendedActivitiesSkeleton from "../../components/skeleton/recommended
 import ErrorScreen from "../../components/errors/error-screen";
 import { Button } from "../../components/ui/button";
 import useActivitiesStore from "../../store/random-activities-store";
+import usePagination from "../../hooks/usePagination";
 
 function SavedActivities() {
-  // UID obtained through the params to get the user activities data
   const { uid } = useParams();
 
-  // Get the total default activities from the store
-  const totalDefaultActivities = useActivitiesStore((state) => state.totalDefaultActivities);
-/*   const recommendedActivities = useActivitiesStore((state) => state.totalDefaultActivities); */
+  const {
+    savedRecommendedActivities,
+    totalDefaultActivities,
+    setTotalDefaultActivities,
+  } = useActivitiesStore((state) => ({
+    userSavedDefaultActivities: state.userSavedDefaultActivities,
+    savedRecommendedActivities: state.savedRecommendedActivities,
+    totalDefaultActivities: state.totalDefaultActivities,
+    setTotalDefaultActivities: state.setTotalDefaultActivities,
+  }));
 
-  // Function to fetch saved activities from the server
   const fetchSavedActivities = (page: number) =>
-    axios.get(`/activity/user-activities/${uid}?page=${page}`).then((res) => res.data);
+    axios
+      .get(`/activity/user-activities/${uid}?page=${page}`)
+      .then((res) => res.data);
 
   const {
     data,
-    isSuccess,
     isLoading,
     isError,
     fetchNextPage,
     hasNextPage,
     refetch,
     isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["savedActivities"],
-    queryFn: ({ pageParam = 1 }) => fetchSavedActivities(pageParam),
-    getNextPageParam: (lastPage, allPages) => {
-      if (lastPage && lastPage.length === 0) {
-        return null; // No more data to load
-      }
-      return allPages.length + 1; // Increase the page number
-    },
-  });
+    ref,
+  } = usePagination(fetchSavedActivities, "savedActivities"); // Use the usePagination hook
 
-  // Saving the ref of the last activity
-  const lastActivityRef = useRef<HTMLDivElement>(null);
-  const { ref, entry } = useIntersection({
-    root: lastActivityRef.current,
-    threshold: 1,
-  });
+  const activities = data?.pages.flatMap((page: any) => page.docs) || [];
 
-  // Detecting the intersection by checking the last activity
-  // This way the infinite scrolling behavior will work properly
+  // Save the fetched activities to the store and update totalDefaultActivities
   useEffect(() => {
-    if (
-      entry?.isIntersecting &&
-      hasNextPage &&
-      !isFetchingNextPage &&
-      !isLoading &&
-      !isError
-    ) {
-      fetchNextPage();
+    if (data?.pages) {
+      useActivitiesStore.setState((state) => ({
+        ...state,
+        userSavedDefaultActivities: activities,
+      }));
+
+      // Calculate totalDefaultActivities and update it
+      const newTotalDefaultActivities = [
+        ...savedRecommendedActivities,
+        ...activities,
+      ];
+      setTotalDefaultActivities(newTotalDefaultActivities);
     }
-  }, [entry]);
-
-  // Access the correct data structure
-  const activities = data?.pages.flatMap((page) => page.docs) || [];
-
-  if (isSuccess && activities.length > 0) {
-    // Concatenate the newly fetched activities with the ones from the store
-    const mergedActivities = [...totalDefaultActivities, ...activities];
-
-    // Set the merged activities in the store
-    useActivitiesStore.setState({ totalDefaultActivities: mergedActivities });
-  }
+  }, [data, savedRecommendedActivities]);
 
   if (activities.length === 0) {
     return (
@@ -110,7 +94,7 @@ function SavedActivities() {
         <>
           <h1 className="font-bold text-4xl">My Activities</h1>
           <div className="columns-1 sm:columns-2 w-full space-y-8 mt-8 lg:columns-3">
-            {activities.map((activity: IPredefinedActivity) => (
+            {totalDefaultActivities.map((activity: IPredefinedActivity) => (
               <ActivityCard key={activity._id} {...activity} />
             ))}
             <div ref={ref}></div>
@@ -130,6 +114,6 @@ function SavedActivities() {
       </button>
     </div>
   );
-}
+        }
 
 export default SavedActivities;

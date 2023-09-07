@@ -19,9 +19,6 @@ import usePagination from "../hooks/usePagination";
 import { axios } from "../features/axios";
 import RecommendedActivitiesSkeleton from "../components/skeleton/recommended-activities-skeleton";
 import ErrorScreen from "../components/errors/error-screen";
-import { IPredefinedActivity } from "../types/default-activities";
-import ActivityCard from "../components/activities/ActivityCard";
-import { ICustomActivity } from "../types/custom-activities";
 
 export type FavoriteCategories = Array<{
   name: string;
@@ -47,7 +44,6 @@ export default function Profile() {
     hasNextPage,
     refetch,
     isFetchingNextPage,
-    ref,
   } = usePagination(fetchSavedActivities, "userActivities");
 
   // Add this condition to load activities only when data is available

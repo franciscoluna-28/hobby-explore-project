@@ -27,14 +27,14 @@ export function useActivityActions(id: string) {
         savedRecommendedActivities: [
           ...state.savedRecommendedActivities,
           activityData,
-
         ],
-        
       }));
-      
- // Log the savedRecommendedActivities to verify if they're being saved successfully
- console.log("Saved Activities:", useActivitiesStore.getState().savedRecommendedActivities);
 
+      // Log the savedRecommendedActivities to verify if they're being saved successfully
+      console.log(
+        "Saved Activities:",
+        useActivitiesStore.getState().savedRecommendedActivities
+      );
 
       toast({
         title: "✅ Activity Saved Successfully",

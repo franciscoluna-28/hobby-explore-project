@@ -51,6 +51,7 @@ export function useFirebase() {
     await handleAuthAction(async () => {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       if (res.user) {
+        const token = await res.user.getIdToken()
         createNewUser(auth, token!);// Always set the token here to keep it up-to-date
         await registerUserToken(res.user.uid, token!);
 
@@ -74,6 +75,7 @@ export function useFirebase() {
       const provider = new GoogleAuthProvider();
       const res = await signInWithPopup(auth, provider);
       if (res.user) {
+        const token = await res.user.getIdToken()
         await registerUserToken(res.user.uid, token!);
         createNewUserWithGoogle(auth, token!); // Removed unnecessary checks
 

@@ -12,9 +12,9 @@ type State = {
 type Actions = {
   setRecommendedActivities: (activities: IPredefinedActivity[]) => void;
   setSelectedKeyword: (keyword: BoredAPIActivityType) => void;
-  saveRecommendedActivity: (activity: IPredefinedActivity, state: State) => void; // Pass state as a parameter
+  saveRecommendedActivity: (activity: IPredefinedActivity) => void;
   setSavedActivities: (activity: IPredefinedActivity[]) => void;
-  setTotalDefaultActivities: (activities: IPredefinedActivity[]) => void; // New action
+  setTotalDefaultActivities: (activity: IPredefinedActivity[]) => void;
 };
 
 const useActivitiesStore = create<State & Actions>((set, state) => ({
@@ -24,9 +24,11 @@ const useActivitiesStore = create<State & Actions>((set, state) => ({
   userSavedDefaultActivities: [],
   totalDefaultActivities: [], // Initialize total default activities as an empty array
 
+
+
   setRecommendedActivities: (activities) =>
     set({ recommendedActivities: activities }),
-  
+
   setSelectedKeyword: (keyword) =>
     set({ selectedKeyword: keyword }),
 
@@ -34,17 +36,19 @@ const useActivitiesStore = create<State & Actions>((set, state) => ({
     set((prevState) => ({
       savedRecommendedActivities: [...prevState.savedRecommendedActivities, activity],
     }));
-  
-    // Calculate the total default activities (savedRecommendedActivities + userSavedDefaultActivities)
-    const totalActivities = [...state().savedRecommendedActivities, ...state().userSavedDefaultActivities];
-    set({ totalDefaultActivities: totalActivities }); // Update total default activities
   },
 
   setSavedActivities: (activities) =>
     set({ userSavedDefaultActivities: activities }),
 
-  setTotalDefaultActivities: (activities) =>
-    set({ totalDefaultActivities: activities }), // Set the total default activities separately
+  // Merge and set the total default activities
+  setTotalDefaultActivities: () => {
+    const totalActivities = [
+      ...state().savedRecommendedActivities,
+      ...state().userSavedDefaultActivities,
+    ];
+    set({ totalDefaultActivities: totalActivities });
+  },
 }));
 
 export default useActivitiesStore;
